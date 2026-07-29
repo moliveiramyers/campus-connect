@@ -1,1 +1,1 @@
-# travel-planner
+# campus-connect
