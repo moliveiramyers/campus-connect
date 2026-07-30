@@ -1,0 +1,49 @@
+### ==================== Users CRUD ==================== 
+
+@baseUrl = http://localhost:8080
+
+### ====================
+### Register User
+### ====================
+
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+    "name": "Abel Chiwandire",
+    "email": "abelchiwandire02@gmail.com",
+    "password": "password123",
+    "role": "user"
+}
+
+### ====================
+### Get User by ID
+### ====================
+
+GET {{baseUrl}}/users/6a6a74c352e433c99aa58f82
+
+### ====================
+### Get All Users
+### ====================
+
+GET {{baseUrl}}/users/
+
+### ====================
+### Update User
+### ====================
+
+PUT {{baseUrl}}/users/6a6a74c352e433c99aa58f82
+Content-Type: application/json
+
+{
+    "name": "Abel Chiwandire",
+    "email": "abelchiwandire02@gmail.com",
+    "password": "password123",
+    "role": "admin"
+}
+
+### ====================
+### Delete User
+### ====================
+
+DELETE {{baseUrl}}/users/6a6a74c352e433c99aa58f82
