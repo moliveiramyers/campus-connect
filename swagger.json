@@ -1,0 +1,742 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CampusConnect API",
+    "version": "1.0.0",
+    "description": "REST API for managing campus users and events. All request bodies are validated and errors use a consistent JSON format."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "User profile operations"
+    },
+    {
+      "name": "Events",
+      "description": "Campus event operations"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all users",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "Users returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create a local user",
+        "operationId": "createUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ResourceId"
+        }
+      ],
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get one user",
+        "operationId": "getUserById",
+        "responses": {
+          "200": {
+            "description": "User returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update one or more user fields",
+        "operationId": "updateUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete a user",
+        "operationId": "deleteUser",
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": ["Events"],
+        "summary": "Get all events",
+        "description": "Optionally filter events by category, status, venue, organizer, or start-date range.",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "$ref": "#/components/schemas/EventStatus"
+            }
+          },
+          {
+            "in": "query",
+            "name": "venueId",
+            "schema": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          {
+            "in": "query",
+            "name": "organizerId",
+            "schema": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "description": "Include events beginning at or after this date.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "description": "Include events beginning at or before this date.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Events returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Events"],
+        "summary": "Create an event",
+        "operationId": "createEvent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ResourceId"
+        }
+      ],
+      "get": {
+        "tags": ["Events"],
+        "summary": "Get one event",
+        "operationId": "getEventById",
+        "responses": {
+          "200": {
+            "description": "Event returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Events"],
+        "summary": "Update one or more event fields",
+        "operationId": "updateEvent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Event updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Events"],
+        "summary": "Delete an event",
+        "operationId": "deleteEvent",
+        "responses": {
+          "200": {
+            "description": "Event deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "ResourceId": {
+        "in": "path",
+        "name": "id",
+        "required": true,
+        "description": "MongoDB ObjectId",
+        "schema": {
+          "$ref": "#/components/schemas/ObjectId"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Request validation failed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "A record with the same unique value already exists",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Unexpected server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ObjectId": {
+        "type": "string",
+        "pattern": "^[a-fA-F0-9]{24}$",
+        "example": "66b4b7d9a2f1c3e4d5a6b7c8"
+      },
+      "EventStatus": {
+        "type": "string",
+        "enum": ["draft", "published", "cancelled", "completed"],
+        "example": "published"
+      },
+      "UserCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "example": "Alex Student"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "alex.student@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "writeOnly": true,
+            "minLength": 8,
+            "maxLength": 128,
+            "example": "Campus123!"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["user", "admin"],
+            "default": "user"
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://example.com/profiles/alex.png"
+          }
+        }
+      },
+      "UserUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "writeOnly": true,
+            "minLength": 8,
+            "maxLength": 128
+          },
+          "role": {
+            "type": "string",
+            "enum": ["user", "admin"]
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["user", "admin"]
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri"
+          },
+          "authMethods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "enum": ["local", "google", "github"]
+                },
+                "providerId": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EventCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "title",
+          "description",
+          "category",
+          "startDate",
+          "endDate",
+          "venueId",
+          "organizerId",
+          "capacity"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 150,
+            "example": "Campus Technology Fair"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "example": "Students present technology projects to the campus community."
+          },
+          "category": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "example": "Technology"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-08-15T15:00:00.000Z"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-08-15T18:00:00.000Z"
+          },
+          "venueId": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "organizerId": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000,
+            "example": 150
+          },
+          "status": {
+            "$ref": "#/components/schemas/EventStatus"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://example.com/events/technology-fair.jpg"
+          }
+        }
+      },
+      "EventUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 150
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000
+          },
+          "category": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "venueId": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "organizerId": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "status": {
+            "$ref": "#/components/schemas/EventStatus"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "Event": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventCreate"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "$ref": "#/components/schemas/ObjectId"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Resource deleted successfully."
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["fail", "error"]
+          },
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

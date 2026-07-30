@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
-     try {
-        const connection = await mongoose.connect(process.env.MONGO_URI)
-        console.log(`MongoDB Connected: ${connection.connection.host}`);
-        } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
-     }
-}
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+
+    if (!mongoUri) {
+        throw new Error('MONGODB_URI is required to connect to MongoDB.');
+    }
+
+    const connection = await mongoose.connect(mongoUri);
+    console.log(`MongoDB Connected: ${connection.connection.host}`);
+};
 
 export default connectDB;
