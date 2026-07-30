@@ -1,10 +1,12 @@
 {
-  "name": "projectdraft",
+  "name": "campus-connect",
   "version": "1.0.0",
-  "description": "",
+  "description": "REST API for campus users, events, venues, and registrations.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test --test-concurrency=1",
+    "validate:swagger": "node scripts/validateSwagger.js",
+    "check": "npm run validate:swagger && npm test",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
@@ -19,6 +21,10 @@
     "express": "^5.2.1",
     "joi": "^18.2.3",
     "mongoose": "^9.8.1",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^12.1.0",
     "nodemon": "^3.1.14"
   }
 }

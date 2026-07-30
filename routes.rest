@@ -1,49 +1,82 @@
-### ==================== Users CRUD ==================== 
-
 @baseUrl = http://localhost:8080
+@userId = 66b4b7d9a2f1c3e4d5a6b7c8
+@eventId = 66b4b7d9a2f1c3e4d5a6b7c9
+@venueId = 66b4b7d9a2f1c3e4d5a6b7ca
 
-### ====================
-### Register User
-### ====================
+### Health
+GET {{baseUrl}}/
 
-POST {{baseUrl}}/users/register
+### Swagger document
+GET {{baseUrl}}/swagger.json
+
+### ==================== Users CRUD ====================
+
+### Create user
+
+POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-    "name": "Abel Chiwandire",
-    "email": "abelchiwandire02@gmail.com",
-    "password": "password123",
+    "name": "Alex Student",
+    "email": "alex.student@example.com",
+    "password": "Campus123!",
     "role": "user"
 }
 
-### ====================
-### Get User by ID
-### ====================
+### Get all users
+GET {{baseUrl}}/users
 
-GET {{baseUrl}}/users/6a6a74c352e433c99aa58f82
+### Get user by ID
+GET {{baseUrl}}/users/{{userId}}
 
-### ====================
-### Get All Users
-### ====================
+### Update user
 
-GET {{baseUrl}}/users/
-
-### ====================
-### Update User
-### ====================
-
-PUT {{baseUrl}}/users/6a6a74c352e433c99aa58f82
+PUT {{baseUrl}}/users/{{userId}}
 Content-Type: application/json
 
 {
-    "name": "Abel Chiwandire",
-    "email": "abelchiwandire02@gmail.com",
-    "password": "password123",
-    "role": "admin"
+    "name": "Alex Updated"
 }
 
-### ====================
-### Delete User
-### ====================
+### Delete user
+DELETE {{baseUrl}}/users/{{userId}}
 
-DELETE {{baseUrl}}/users/6a6a74c352e433c99aa58f82
+### ==================== Events CRUD ====================
+
+### Create event
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+    "title": "Campus Technology Fair",
+    "description": "Students present technology projects to the campus community.",
+    "category": "Technology",
+    "startDate": "2026-08-15T15:00:00.000Z",
+    "endDate": "2026-08-15T18:00:00.000Z",
+    "venueId": "{{venueId}}",
+    "organizerId": "{{userId}}",
+    "capacity": 150,
+    "status": "published",
+    "imageUrl": "https://example.com/events/technology-fair.jpg"
+}
+
+### Get all events
+GET {{baseUrl}}/events
+
+### Filter events
+GET {{baseUrl}}/events?status=published&category=Technology
+
+### Get event by ID
+GET {{baseUrl}}/events/{{eventId}}
+
+### Update event
+PUT {{baseUrl}}/events/{{eventId}}
+Content-Type: application/json
+
+{
+    "capacity": 200,
+    "status": "published"
+}
+
+### Delete event
+DELETE {{baseUrl}}/events/{{eventId}}
