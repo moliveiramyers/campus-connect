@@ -59,7 +59,7 @@ router.post('/register',
           description: 'User created successfully.'
       }
   */
-    validate(userSchema), user.createUser);
+    validate(createUserSchema), user.createUser);
 
 router.put('/:id',
     /*
@@ -89,7 +89,7 @@ router.put('/:id',
            description: 'User not found.'
        }
    */
-    validateID, validate(userSchema), user.updateUser);
+    validateID, validate(createUserSchema), user.updateUser);
 
 router.delete('/:id',
     /*
