@@ -1,6 +1,7 @@
 import { Router } from "express";
 import userRouter from "./users.js";
 import venueRouter from "./venues.js";
+import eventRouter from "./events.js"
 import swaggerUi from "swagger-ui-express";
 import {createRequire} from "module";
 
@@ -20,6 +21,7 @@ router.use(
 );
 
 router.use("/users", userRouter);
+router.use("/events", eventRouter);
 router.use("/venues", venueRouter);
 
 export default router;

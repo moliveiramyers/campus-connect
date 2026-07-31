@@ -53,4 +53,4 @@ export {
     ForbiddenError,
     NotFoundError,
     ConflictError
-}
+};

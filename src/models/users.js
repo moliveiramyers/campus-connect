@@ -1,10 +1,10 @@
-import { mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 
 const authMethodSchema = new mongoose.Schema(
     {
         provider: {
             type: String,
-            enum: ["local", "google", "github"],
+            enum: ['local', 'google', 'github'],
             required: true,
             trim: true
         },
@@ -54,8 +54,8 @@ const userSchema = new mongoose.Schema(
 
         role: {
             type: String,
-            enum: ["user", "admin"],
-            default: "user",
+            enum: ['user', 'admin'],
+            default: 'user',
             required: true
         },
 
@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema(
         timestamps: true,
         toJSON: {
             transform(doc, ret) {
-                ret.authMethods.forEach((method) => {
+                (ret.authMethods || []).forEach((method) => {
                     delete method.passwordHash;
                 });
 
@@ -84,4 +84,4 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model('User', userSchema);

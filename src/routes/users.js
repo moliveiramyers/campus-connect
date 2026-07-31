@@ -2,7 +2,10 @@ import express from 'express';
 
 import * as user from '../controllers/users.js';
 import validate from '../middleware/validate.js';
-import userSchema from '../validators/validateUsers.js';
+import {
+    createUserSchema,
+    updateUserSchema
+} from '../validators/validateUsers.js';
 import validateID from '../middleware/validateObjectId.js';
 
 const router = express.Router();
