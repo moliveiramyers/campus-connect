@@ -13,7 +13,7 @@ const startServer = async () => {
         });
 
         process.on('unhandledRejection', (err) => {
-            console.error('UNHANDLED PROMISE REJECTION! Shitting down gracefully...');
+            console.error('UNHANDLED PROMISE REJECTION! Shutting down gracefully...');
             console.error(err.name, err.message);
 
             server.close(() => {

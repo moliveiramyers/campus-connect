@@ -5,7 +5,7 @@ import cors from 'cors';
 
 import { NotFoundError } from './utils/error.js';
 import errorHandler from './middleware/errorHandler.js';
-import routes from './routes/users.js';
+import routes from './routes/index.js';
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* Set up routes */
-app.use('/users', routes);
+app.use('/', routes);
 
 app.use((req, res, next) => {
     next(new NotFoundError(`Can't find ${req.originalUrl} on this server`));
