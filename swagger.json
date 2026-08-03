@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Campus Connect API",
-    "description": "Campus Connect API for managing users, events, venues and registrations.",
+    "description": "Campus Connect API for managing users, events, and venues.",
     "version": "1.0.0"
   },
   "host": "localhost:8080",
@@ -10,17 +10,13 @@
   "schemes": [
     "http"
   ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/users/": {
       "get": {
         "tags": [
@@ -30,6 +26,39 @@
         "responses": {
           "200": {
             "description": "List of all users."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Register a new user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "409": {
+            "description": "A user with the submitted email already exists."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       }
@@ -53,8 +82,14 @@
           "200": {
             "description": "User found successfully."
           },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
           "404": {
             "description": "User not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
@@ -84,8 +119,17 @@
           "200": {
             "description": "User updated successfully."
           },
+          "400": {
+            "description": "Invalid ID or request body."
+          },
           "404": {
             "description": "User not found."
+          },
+          "409": {
+            "description": "The updated email is already in use."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
@@ -107,111 +151,203 @@
           "200": {
             "description": "User deleted successfully."
           },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
           "404": {
             "description": "User not found."
-          }
-        }
-      }
-    },
-    "/users/register": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "description": "Register a new user.",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User created successfully."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       }
     },
     "/events/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Get all events. Supports category, status, venueId, organizerId, from, and to filters.",
         "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "enum": [
+              "draft",
+              "published",
+              "cancelled",
+              "completed"
+            ]
+          },
+          {
+            "name": "venueId",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "organizerId",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
           {
             "name": "from",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "format": "date-time",
+            "required": false
           },
           {
             "name": "to",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "format": "date-time",
+            "required": false
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of events."
+          },
+          "400": {
+            "description": "Invalid filter value."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Create a new event.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          }
+        ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Event created successfully."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       }
     },
     "/events/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Get an event by its ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Event ID"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Event found successfully."
+          },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
+          "404": {
+            "description": "Event not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Update one or more fields on an event.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Event ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EventUpdate"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Event updated successfully."
+          },
+          "400": {
+            "description": "Invalid ID or request body."
+          },
+          "404": {
+            "description": "Event not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Delete an event.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Event ID"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Event deleted successfully."
+          },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
+          "404": {
+            "description": "Event not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       }
@@ -225,6 +361,9 @@
         "responses": {
           "200": {
             "description": "List of active venues."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
@@ -246,6 +385,12 @@
         "responses": {
           "201": {
             "description": "Venue created successfully."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       }
@@ -269,8 +414,14 @@
           "200": {
             "description": "Venue found successfully."
           },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
           "404": {
             "description": "Venue not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
@@ -300,8 +451,14 @@
           "200": {
             "description": "Venue updated successfully."
           },
+          "400": {
+            "description": "Invalid ID or request body."
+          },
           "404": {
             "description": "Venue not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       },
@@ -323,14 +480,33 @@
           "200": {
             "description": "Venue deactivated successfully."
           },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
           "404": {
             "description": "Venue not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
           }
         }
       }
     }
   },
   "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "fail"
+        },
+        "message": {
+          "type": "string",
+          "example": "Validation failed for this request."
+        }
+      }
+    },
     "User": {
       "type": "object",
       "properties": {
@@ -366,6 +542,64 @@
         "profileImage": {
           "type": "string",
           "example": "https://example.com/new-profile-image.jpg"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Campus Technology Fair"
+        },
+        "description": {
+          "type": "string",
+          "example": "Students present technology projects to the campus community."
+        },
+        "category": {
+          "type": "string",
+          "example": "Technology"
+        },
+        "startDate": {
+          "type": "string",
+          "example": "2026-08-15T15:00:00.000Z"
+        },
+        "endDate": {
+          "type": "string",
+          "example": "2026-08-15T18:00:00.000Z"
+        },
+        "venueId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7ca"
+        },
+        "organizerId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c8"
+        },
+        "capacity": {
+          "type": "number",
+          "example": 150
+        },
+        "status": {
+          "type": "string",
+          "example": "published"
+        },
+        "imageUrl": {
+          "type": "string",
+          "example": "https://example.com/events/technology-fair.jpg"
+        }
+      }
+    },
+    "EventUpdate": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "number",
+          "example": 200
+        },
+        "status": {
+          "type": "string",
+          "example": "published"
         }
       }
     },

@@ -1,27 +1,49 @@
-import { Router } from "express";
-import userRouter from "./users.js";
-import venueRouter from "./venues.js";
-import eventRouter from "./events.js"
-import swaggerUi from "swagger-ui-express";
-import {createRequire} from "module";
+import { Router } from 'express';
+import { createRequire } from 'module';
+import swaggerUi from 'swagger-ui-express';
+
+import eventRouter from './events.js';
+import userRouter from './users.js';
+import venueRouter from './venues.js';
 
 const router = Router();
 
 const require = createRequire(import.meta.url);
-const swaggerDocument = require("../../swagger.json");
+const swaggerDocument = require('../../swagger.json');
 
-router.get("/", (req, res) => {
-    res.send('Welcome to the Campus Connect API!')
+const requestSwaggerDocument = (req) => ({
+    ...swaggerDocument,
+    host: req.get('host'),
+    schemes: [req.protocol]
+});
+
+router.get('/', (req, res) => {
+    /* #swagger.ignore = true */
+    res.status(200).json({
+        name: 'Campus Connect API',
+        status: 'ok',
+        documentation: '/api-docs',
+        swagger: '/swagger.json'
+    });
+});
+
+router.get('/swagger.json', (req, res) => {
+    /* #swagger.ignore = true */
+    res.status(200).json(requestSwaggerDocument(req));
 });
 
 router.use(
-    "/api-docs",
+    '/api-docs',
     swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument)
+    swaggerUi.setup(null, {
+        swaggerOptions: {
+            url: '/swagger.json'
+        }
+    })
 );
 
-router.use("/users", userRouter);
-router.use("/events", eventRouter);
-router.use("/venues", venueRouter);
+router.use('/users', userRouter);
+router.use('/events', eventRouter);
+router.use('/venues', venueRouter);
 
 export default router;

@@ -23,6 +23,10 @@ router.get(
         #swagger.responses[200] = {
             description: 'List of active venues.'
         }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
+        }
     */
     getAllVenues
 );
@@ -47,6 +51,14 @@ router.get(
         #swagger.responses[404] = {
             description: 'Venue not found.'
         }
+
+        #swagger.responses[400] = {
+            description: 'Invalid MongoDB ObjectId.'
+        }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
+        }
     */
     validateID,
     getVenueById
@@ -68,6 +80,14 @@ router.post(
 
         #swagger.responses[201] = {
             description: 'Venue created successfully.'
+        }
+
+        #swagger.responses[400] = {
+            description: 'Request validation failed.'
+        }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
         }
     */
     validate(createVenueSchema),
@@ -102,6 +122,14 @@ router.put(
         #swagger.responses[404] = {
             description: 'Venue not found.'
         }
+
+        #swagger.responses[400] = {
+            description: 'Invalid ID or request body.'
+        }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
+        }
     */
     validateID,
     validate(updateVenueSchema),
@@ -127,6 +155,14 @@ router.delete(
 
         #swagger.responses[404] = {
             description: 'Venue not found.'
+        }
+
+        #swagger.responses[400] = {
+            description: 'Invalid MongoDB ObjectId.'
+        }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
         }
     */
     validateID,

@@ -4,20 +4,20 @@ import dns from 'dns';
 dns.setServers(['8.8.8.8']);
 
 const connectDB = async () => {
-    if (!process.env.MONGO_URI) {
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+
+    if (!mongoUri) {
         throw new Error('MONGODB_URI is required to connect to MongoDB.');
     }
+
     try {
-        const connection = await mongoose.connect(process.env.MONGO_URI, {
+        const connection = await mongoose.connect(mongoUri, {
             dbName: 'campus-connect'
         });
         console.log(`MongoDB Connected: ${connection.connection.host}`);
     } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        throw new Error(`MongoDB connection failed: ${error.message}`);
     }
+};
 
-
-
-}
 export default connectDB;
