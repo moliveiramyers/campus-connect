@@ -53,8 +53,9 @@ The API starts on `http://localhost:8080` by default. Open
 | PUT | `/events/:id` | Update one or more event fields |
 | DELETE | `/events/:id` | Delete an event |
 
-The legacy `POST /users/register` route remains available for compatibility.
-All graded operations are documented in `swagger.json`.
+All graded operations are documented in `swagger.json`. The API also exposes
+the current-host version of that document at `/swagger.json`, so Swagger UI
+executes requests against the same local or Render server from which it loads.
 
 ## Checks
 
@@ -74,8 +75,12 @@ default branch, and verify:
 
 - `https://YOUR-SERVICE.onrender.com/`
 - `https://YOUR-SERVICE.onrender.com/api-docs`
+- `https://YOUR-SERVICE.onrender.com/swagger.json`
 - CRUD operations from the published Swagger UI
 
+The shared Week 05 deployment is available at
+`https://campus-connect-ckpe.onrender.com/api-docs`.
+
 Never commit `.env` or database credentials. Render deployment and the required
-5–8 minute YouTube video are external submission steps and cannot be completed
+5-8 minute YouTube video are external submission steps and cannot be completed
 by the source code alone.

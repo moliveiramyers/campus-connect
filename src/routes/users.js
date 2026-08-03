@@ -18,6 +18,10 @@ router.get('/',
         #swagger.responses[200] = {
             description: 'List of all users.'
         }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
+        }
     */
     user.getAllUsers);
 router.get('/:id',
@@ -39,10 +43,18 @@ router.get('/:id',
        #swagger.responses[404] = {
            description: 'User not found.'
        }
+
+       #swagger.responses[400] = {
+           description: 'Invalid MongoDB ObjectId.'
+       }
+
+       #swagger.responses[500] = {
+           description: 'Unexpected server error.'
+       }
    */
     validateID, user.getUserById);
     
-router.post('/register',
+router.post('/',
     /*
       #swagger.tags = ['Users']
       #swagger.description = 'Register a new user.'
@@ -57,6 +69,18 @@ router.post('/register',
 
       #swagger.responses[201] = {
           description: 'User created successfully.'
+      }
+
+      #swagger.responses[400] = {
+          description: 'Request validation failed.'
+      }
+
+      #swagger.responses[409] = {
+          description: 'A user with the submitted email already exists.'
+      }
+
+      #swagger.responses[500] = {
+          description: 'Unexpected server error.'
       }
   */
     validate(createUserSchema), user.createUser);
@@ -88,8 +112,20 @@ router.put('/:id',
        #swagger.responses[404] = {
            description: 'User not found.'
        }
+
+       #swagger.responses[400] = {
+           description: 'Invalid ID or request body.'
+       }
+
+       #swagger.responses[409] = {
+           description: 'The updated email is already in use.'
+       }
+
+       #swagger.responses[500] = {
+           description: 'Unexpected server error.'
+       }
    */
-    validateID, validate(createUserSchema), user.updateUser);
+    validateID, validate(updateUserSchema), user.updateUser);
 
 router.delete('/:id',
     /*
@@ -109,6 +145,14 @@ router.delete('/:id',
 
        #swagger.responses[404] = {
            description: 'User not found.'
+       }
+
+       #swagger.responses[400] = {
+           description: 'Invalid MongoDB ObjectId.'
+       }
+
+       #swagger.responses[500] = {
+           description: 'Unexpected server error.'
        }
    */
     validateID, user.deleteUser);

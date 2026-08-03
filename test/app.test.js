@@ -4,6 +4,7 @@ import { after, before, test } from 'node:test';
 import app from '../src/app.js';
 import Event from '../src/models/events.js';
 import User from '../src/models/users.js';
+import Venue from '../src/models/venues.js';
 
 process.env.NODE_ENV = 'test';
 
@@ -30,6 +31,18 @@ const eventFixture = {
     organizerId: USER_ID,
     capacity: 150,
     status: 'published'
+};
+
+const venueFixture = {
+    _id: VENUE_ID,
+    name: 'Library Auditorium',
+    venueType: 'in-person',
+    building: 'Library Building',
+    room: '205',
+    address: 'Campus North',
+    capacity: 150,
+    accessibilityNotes: 'Wheelchair accessible.',
+    isActive: true
 };
 
 let server;
@@ -91,12 +104,24 @@ test('health route and Swagger document are available', async () => {
 
     const swagger = await request('/swagger.json');
     assert.equal(swagger.response.status, 200);
-    assert.ok(swagger.body.paths['/users']);
-    assert.ok(swagger.body.paths['/events']);
+    assert.ok(swagger.body.paths['/users'] || swagger.body.paths['/users/']);
+    assert.ok(swagger.body.paths['/events'] || swagger.body.paths['/events/']);
+    assert.equal(swagger.body.host, new URL(baseUrl).host);
+    assert.deepEqual(swagger.body.schemes, ['http']);
 
     const docs = await request('/api-docs/');
     assert.equal(docs.response.status, 200);
     assert.match(docs.body, /Swagger UI/);
+
+    const swaggerInit = await request('/api-docs/swagger-ui-init.js');
+    assert.equal(swaggerInit.response.status, 200);
+    assert.match(swaggerInit.body, /\/swagger\.json/);
+    assert.doesNotMatch(swaggerInit.body, /localhost:8080/);
+
+    const proxiedSwagger = await request('/swagger.json', {
+        headers: { 'x-forwarded-proto': 'https' }
+    });
+    assert.deepEqual(proxiedSwagger.body.schemes, ['https']);
 });
 
 test('user CRUD routes return the expected success statuses', async () => {
@@ -197,6 +222,55 @@ test('event CRUD routes return the expected success statuses', async () => {
 
     await withStub(Event, 'findByIdAndDelete', async () => eventFixture, async () => {
         const result = await request(`/events/${EVENT_ID}`, {
+            method: 'DELETE'
+        });
+        assert.equal(result.response.status, 200);
+    });
+});
+
+test('venue CRUD routes return the expected success statuses', async () => {
+    await withStub(Venue, 'find', async () => [venueFixture], async () => {
+        const result = await request('/venues');
+        assert.equal(result.response.status, 200);
+        assert.equal(result.body.length, 1);
+    });
+
+    await withStub(Venue, 'findOne', async () => venueFixture, async () => {
+        const result = await request(`/venues/${VENUE_ID}`);
+        assert.equal(result.response.status, 200);
+        assert.equal(result.body._id, VENUE_ID);
+    });
+
+    await withStub(Venue, 'create', async (payload) => ({
+        _id: VENUE_ID,
+        ...payload,
+        isActive: true
+    }), async () => {
+        const result = await request('/venues', {
+            method: 'POST',
+            body: JSON.stringify({
+                ...venueFixture,
+                _id: undefined,
+                isActive: undefined
+            })
+        });
+        assert.equal(result.response.status, 201);
+    });
+
+    await withStub(Venue, 'findOneAndUpdate', async () => ({
+        ...venueFixture,
+        capacity: 200
+    }), async () => {
+        const result = await request(`/venues/${VENUE_ID}`, {
+            method: 'PUT',
+            body: JSON.stringify({ capacity: 200 })
+        });
+        assert.equal(result.response.status, 200);
+        assert.equal(result.body.capacity, 200);
+    });
+
+    await withStub(Venue, 'findOneAndUpdate', async () => venueFixture, async () => {
+        const result = await request(`/venues/${VENUE_ID}`, {
             method: 'DELETE'
         });
         assert.equal(result.response.status, 200);

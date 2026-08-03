@@ -1,58 +1,64 @@
-# Project Status Audit
+# Week 05 Project Status Audit
 
-Audit date: 2026-07-30
+Audit date: 2026-08-03
 
-Reviewed baseline: `main` at `ab87327`
+Reviewed baseline: `origin/main` at `9afbe05`
 
-Implementation branch: `feat/events-swagger-w05`
+Implementation branch: `fix/week05-rubric-compliance`
 
-## Week 05 rubric
+Published service: `https://campus-connect-ckpe.onrender.com`
+
+## Rubric status
 
 | Requirement | Status | Evidence / remaining action |
 | --- | --- | --- |
-| Two MongoDB collections with GET, POST, PUT, DELETE | Implemented in branch | Users and Events expose ten documented operations. |
-| Request validation | Implemented in branch | Joi schemas reject unknown or invalid fields; IDs and event date order are validated. |
-| Error handling and correct status codes | Implemented in branch | Each controller uses `try/catch`; centralized middleware returns 400, 404, 409, or 500 responses. |
-| Swagger at `/api-docs` | Implemented and tested locally | `swagger.json` validates as OpenAPI 3.0.3 and Swagger UI serves all ten operations. |
-| Published Render URL | Code is deploy-ready; external action pending | Sync `render.yaml`, set the secret `MONGODB_URI`, deploy, and execute CRUD from the public `/api-docs`. |
-| Two contributions per team member | Alejandro documented; others pending | See `CONTRIBUTIONS.md`; every other member must record their own verified work. |
-| 5–8 minute YouTube video | External action pending | Record only after the Render deployment and database mutations are verified. |
+| Public deployment | Published; branch redeploy required | Render responds successfully at `/`, `/api-docs`, `/users`, `/events`, and `/venues`. Merge and redeploy this branch so Swagger executes against Render instead of localhost. |
+| Two CRUD collections | Complete | Users and Events implement GET all, GET by ID, POST, PUT, and DELETE. Venues provides an additional complete CRUD collection. |
+| Swagger documentation | Complete in branch | `swagger.json` validates and documents 15 operations with bodies, filters, and status responses. `/api-docs` loads `/swagger.json` dynamically from the current host. |
+| Error handling | Complete in branch | All Users, Events, and Venues controllers use `try/catch`; centralized middleware returns 400, 404, 409, or safe 500 responses. |
+| Validation | Complete in branch | Joi validates POST and PUT bodies, MongoDB ObjectIds, event dates, enums, URLs, and required fields. |
+| Individual contribution | Alejandro complete | Two verified Week 05 contributions are recorded in `CONTRIBUTIONS.md`. Other members must record only their own work. |
+| Video | External action pending | Record the required 5-8 minute video after the branch is merged and the public CRUD operations are verified. |
 
-## Full proposal scope
+## Pull request review
 
-| Area | Current state | Still needed after Week 05 |
-| --- | --- | --- |
-| Users | CRUD, local password hashing, validation, and error handling are present. | OAuth login/session flow and role-based authorization. |
-| Events | CRUD, model, validation, filters, Swagger, and route tests are present in this branch. | Organizer/admin authorization and optional business-rule tests. |
-| Venues | Not present in the reviewed repository. | Model, validation, CRUD, Swagger, and tests assigned to its team owner. |
-| Registrations | Not present in the reviewed repository. | Model, relationships, CRUD, ownership rules, Swagger, and tests. |
-| Feedback | Not present; proposal marks it as stretch scope. | Add only after required collections and authentication are stable. |
-| Authentication | Not present. | OAuth 2.0 provider, sessions, `/auth/status`, logout, and protected routes. |
-| Testing | Route tests cover both current CRUD collections with mocked model methods. | Add database-backed integration tests and the proposal's remaining GET/unit tests. |
-| Deployment | Render Blueprint and health endpoint are ready. | Publish from the shared team account, configure secrets, and verify the live database. |
+- PR #3, `Contribution documentation`, is open, mergeable, and requests
+  Alejandro's review.
+- Its changes are valid: Abel documents two contributions, moves user creation
+  to `POST /users`, and applies the update schema to `PUT /users/:id`.
+- Its failed CI check is not caused by those changes. The base branch changed
+  `GET /` to plain text while the existing test expects the API documentation
+  link in the health response.
+- This branch restores that response and also includes the same compatible
+  Users route corrections, so it remains safe if PR #3 is merged first.
 
-## Baseline findings corrected in this branch
+## Corrections in this branch
 
-- The baseline contained only the Users collection and no Swagger UI.
-- `npm test` intentionally exited with an error.
-- User updates required every creation field and could store a submitted password
-  as an unmodeled plain field instead of updating its hash.
-- Duplicate-key and Mongoose validation errors could become 500 responses in
-  development.
-- The documented proposal used `MONGODB_URI`, while the code only read
-  `MONGO_URI`.
-- There was no `.env.example`, Render configuration, meaningful README, or
-  individual-contribution record.
+- Restored a JSON health response with links to `/api-docs` and
+  `/swagger.json`.
+- Added a public `/swagger.json` route and made Swagger UI use the current
+  request host and protocol.
+- Corrected user creation to `POST /users` and user updates to use the partial
+  update schema.
+- Completed Events Swagger definitions, parameters, request bodies, tags, and
+  error responses.
+- Added documented error responses for Users and Venues.
+- Added explicit `try/catch` handling to every Venues controller.
+- Made MongoDB configuration accept the proposal's `MONGODB_URI` name while
+  preserving `MONGO_URI` compatibility.
+- Added Venue CRUD route tests and corrected the existing health and Users test
+  regressions.
+- Removed a duplicate production `nodemon` dependency and patched the reported
+  transitive npm vulnerability.
 
 ## Pre-submission checklist
 
-- Merge this branch only after a teammate reviews it and checks for new parallel
-  branches.
-- Set `MONGODB_URI` in Render; never commit its value.
-- Use the public Swagger UI to create, read, update, and delete both a User and
-  an Event, confirming the MongoDB Atlas records change.
-- Confirm invalid bodies and invalid ObjectIds return 400, missing records
-  return 404, and unexpected errors return 500.
-- Have every team member add two truthful contributions.
-- Record the 5–8 minute video at the published URL and submit the GitHub,
-  Render, and YouTube links.
+- Review and merge PR #3 or coordinate its duplicated Users route changes.
+- Review and merge this branch, then wait for Render to redeploy.
+- Confirm the public `/swagger.json` reports the Render host with HTTPS.
+- From the public Swagger UI, create, read, update, and delete records in two
+  collections and confirm the MongoDB Atlas records change.
+- Confirm invalid bodies and ObjectIds return 400, missing records return 404,
+  and unexpected failures return 500.
+- Have each team member document two truthful contributions.
+- Record the 5-8 minute video and submit the GitHub, Render, and YouTube links.
