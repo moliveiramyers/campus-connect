@@ -7,7 +7,7 @@ work they personally completed.
 | Team member | Contribution 1 | Contribution 2 |
 | --- | --- | --- |
 | Alejandro Eliseo Valladares Crisanto | Implemented the Events collection with its Mongoose model, Joi validation, filters, and complete GET/POST/PUT/DELETE routes. | Integrated and documented the Users and Events APIs in executable Swagger UI at `/api-docs`, including automated OpenAPI and HTTP route checks. |
-| Abel Chiwandire | Pending team member confirmation. | Pending team member confirmation. |
+| Abel Chiwandire | Implemented the Users collection with its Mongoose model, Joi validation, and complete GET/POST/PUT/DELETE routes. | Implemented custom error classes and a global error-handling middleware |
 | Carlos Enrique Guardado Cruz | Pending team member confirmation. | Pending team member confirmation. |
 | Corbin Gerhard / Francis Van Scheltema | Pending team member confirmation. | Pending team member confirmation. |
 | Lucky Ayei Inyang Eni | Pending team member confirmation. | Pending team member confirmation. |
