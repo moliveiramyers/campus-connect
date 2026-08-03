@@ -42,7 +42,7 @@ router.get('/:id',
    */
     validateID, user.getUserById);
     
-router.post('/register',
+router.post('/',
     /*
       #swagger.tags = ['Users']
       #swagger.description = 'Register a new user.'
@@ -89,7 +89,7 @@ router.put('/:id',
            description: 'User not found.'
        }
    */
-    validateID, validate(createUserSchema), user.updateUser);
+    validateID, validate(updateUserSchema), user.updateUser);
 
 router.delete('/:id',
     /*
