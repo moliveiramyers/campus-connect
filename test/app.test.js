@@ -1,16 +1,30 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 
-import app from '../src/app.js';
 import Event from '../src/models/events.js';
+import Registration from '../src/models/registrations.js';
 import User from '../src/models/users.js';
 import Venue from '../src/models/venues.js';
+import {
+    createRegistrationSchema,
+    updateRegistrationSchema
+} from '../src/validators/validateRegistrations.js';
+import {
+    createVenueSchema,
+    updateVenueSchema
+} from '../src/validators/validateVenue.js';
 
 process.env.NODE_ENV = 'test';
+process.env.SESSION_SECRET = 'test-session-secret-not-used-in-production';
+delete process.env.GITHUB_CLIENT_ID;
+delete process.env.GITHUB_CLIENT_SECRET;
+
+const { default: app } = await import('../src/app.js');
 
 const USER_ID = '66b4b7d9a2f1c3e4d5a6b7c8';
 const EVENT_ID = '66b4b7d9a2f1c3e4d5a6b7c9';
 const VENUE_ID = '66b4b7d9a2f1c3e4d5a6b7ca';
+const REGISTRATION_ID = '66b4b7d9a2f1c3e4d5a6b7cb';
 
 const userFixture = {
     _id: USER_ID,
@@ -43,6 +57,14 @@ const venueFixture = {
     capacity: 150,
     accessibilityNotes: 'Wheelchair accessible.',
     isActive: true
+};
+
+const registrationFixture = {
+    _id: REGISTRATION_ID,
+    userId: USER_ID,
+    eventId: EVENT_ID,
+    status: 'registered',
+    notes: 'Requires wheelchair seating.'
 };
 
 let server;
@@ -106,6 +128,13 @@ test('health route and Swagger document are available', async () => {
     assert.equal(swagger.response.status, 200);
     assert.ok(swagger.body.paths['/users'] || swagger.body.paths['/users/']);
     assert.ok(swagger.body.paths['/events'] || swagger.body.paths['/events/']);
+    assert.ok(swagger.body.paths['/venues'] || swagger.body.paths['/venues/']);
+    assert.ok(
+        swagger.body.paths['/registrations']
+        || swagger.body.paths['/registrations/']
+    );
+    assert.ok(swagger.body.paths['/auth/github']);
+    assert.ok(swagger.body.securityDefinitions.githubOAuth);
     assert.equal(swagger.body.host, new URL(baseUrl).host);
     assert.deepEqual(swagger.body.schemes, ['http']);
 
@@ -122,21 +151,32 @@ test('health route and Swagger document are available', async () => {
         headers: { 'x-forwarded-proto': 'https' }
     });
     assert.deepEqual(proxiedSwagger.body.schemes, ['https']);
+
+    const authStatus = await request('/auth/status');
+    assert.equal(authStatus.response.status, 200);
+    assert.equal(authStatus.body.authenticated, false);
+
+    const oauthUnavailable = await request('/auth/github');
+    assert.equal(oauthUnavailable.response.status, 503);
 });
 
-test('user CRUD routes return the expected success statuses', async () => {
+test('GET /users returns all users', async () => {
     await withStub(User, 'find', async () => [userFixture], async () => {
         const result = await request('/users');
         assert.equal(result.response.status, 200);
         assert.equal(result.body.length, 1);
     });
+});
 
+test('GET /users/:id returns one user', async () => {
     await withStub(User, 'findById', async () => userFixture, async () => {
         const result = await request(`/users/${USER_ID}`);
         assert.equal(result.response.status, 200);
         assert.equal(result.body._id, USER_ID);
     });
+});
 
+test('user write routes return the expected success statuses', async () => {
     await withStub(User, 'create', async (payload) => ({
         _id: USER_ID,
         ...payload,
@@ -177,7 +217,7 @@ test('user CRUD routes return the expected success statuses', async () => {
     });
 });
 
-test('event CRUD routes return the expected success statuses', async () => {
+test('GET /events returns all events', async () => {
     await withStub(Event, 'find', () => ({
         sort: async () => [eventFixture]
     }), async () => {
@@ -185,13 +225,17 @@ test('event CRUD routes return the expected success statuses', async () => {
         assert.equal(result.response.status, 200);
         assert.equal(result.body.length, 1);
     });
+});
 
+test('GET /events/:id returns one event', async () => {
     await withStub(Event, 'findById', async () => eventFixture, async () => {
         const result = await request(`/events/${EVENT_ID}`);
         assert.equal(result.response.status, 200);
         assert.equal(result.body._id, EVENT_ID);
     });
+});
 
+test('event write routes return the expected success statuses', async () => {
     await withStub(Event, 'create', async (payload) => ({
         _id: EVENT_ID,
         ...payload
@@ -228,52 +272,69 @@ test('event CRUD routes return the expected success statuses', async () => {
     });
 });
 
-test('venue CRUD routes return the expected success statuses', async () => {
+test('GET /venues returns all active venues', async () => {
     await withStub(Venue, 'find', async () => [venueFixture], async () => {
         const result = await request('/venues');
         assert.equal(result.response.status, 200);
         assert.equal(result.body.length, 1);
     });
+});
 
+test('GET /venues/:id returns one venue', async () => {
     await withStub(Venue, 'findOne', async () => venueFixture, async () => {
         const result = await request(`/venues/${VENUE_ID}`);
         assert.equal(result.response.status, 200);
         assert.equal(result.body._id, VENUE_ID);
     });
+});
 
-    await withStub(Venue, 'create', async (payload) => ({
-        _id: VENUE_ID,
-        ...payload,
-        isActive: true
+test('GET /registrations returns all registrations', async () => {
+    await withStub(Registration, 'find', () => ({
+        sort: async () => [registrationFixture]
     }), async () => {
-        const result = await request('/venues', {
-            method: 'POST',
-            body: JSON.stringify({
-                ...venueFixture,
-                _id: undefined,
-                isActive: undefined
-            })
-        });
-        assert.equal(result.response.status, 201);
+        const result = await request('/registrations?status=registered');
+        assert.equal(result.response.status, 200);
+        assert.equal(result.body.length, 1);
     });
+});
 
-    await withStub(Venue, 'findOneAndUpdate', async () => ({
-        ...venueFixture,
-        capacity: 200
-    }), async () => {
-        const result = await request(`/venues/${VENUE_ID}`, {
+test('GET /registrations/:id returns one registration', async () => {
+    await withStub(
+        Registration,
+        'findById',
+        async () => registrationFixture,
+        async () => {
+            const result = await request(`/registrations/${REGISTRATION_ID}`);
+            assert.equal(result.response.status, 200);
+            assert.equal(result.body._id, REGISTRATION_ID);
+        }
+    );
+});
+
+test('venue and registration writes require an OAuth session', async () => {
+    const requests = [
+        request('/venues', {
+            method: 'POST',
+            body: JSON.stringify({})
+        }),
+        request(`/venues/${VENUE_ID}`, {
             method: 'PUT',
             body: JSON.stringify({ capacity: 200 })
-        });
-        assert.equal(result.response.status, 200);
-        assert.equal(result.body.capacity, 200);
-    });
+        }),
+        request('/registrations', {
+            method: 'POST',
+            body: JSON.stringify({})
+        }),
+        request(`/registrations/${REGISTRATION_ID}`, {
+            method: 'PUT',
+            body: JSON.stringify({ status: 'attended' })
+        })
+    ];
 
-    await withStub(Venue, 'findOneAndUpdate', async () => venueFixture, async () => {
-        const result = await request(`/venues/${VENUE_ID}`, {
-            method: 'DELETE'
-        });
-        assert.equal(result.response.status, 200);
+    const results = await Promise.all(requests);
+    results.forEach(({ response, body }) => {
+        assert.equal(response.status, 401);
+        assert.equal(body.status, 'fail');
     });
 });
 
@@ -294,6 +355,20 @@ test('invalid request data returns 400 without calling MongoDB', async () => {
 
     const invalidFilter = await request('/events?status=unknown');
     assert.equal(invalidFilter.response.status, 400);
+});
+
+test('venue and registration POST/PUT schemas reject invalid data', () => {
+    assert.ok(createVenueSchema.validate({}).error);
+    assert.ok(updateVenueSchema.validate({}).error);
+    assert.ok(createRegistrationSchema.validate({}).error);
+    assert.ok(updateRegistrationSchema.validate({}).error);
+
+    const validRegistration = createRegistrationSchema.validate({
+        userId: USER_ID,
+        eventId: EVENT_ID
+    });
+    assert.equal(validRegistration.error, undefined);
+    assert.equal(validRegistration.value.status, 'registered');
 });
 
 test('unexpected controller errors return a safe 500 response', async () => {

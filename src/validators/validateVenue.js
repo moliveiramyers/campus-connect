@@ -1,6 +1,6 @@
-import Joi from "joi";
+import Joi from 'joi';
 
- const createVenueSchema = Joi.object({
+const createVenueSchema = Joi.object({
     name: Joi.string()
         .trim()
         .min(1)
@@ -8,15 +8,15 @@ import Joi from "joi";
         .required(),
 
     venueType: Joi.string()
-        .valid("in-person", "online")
+        .valid('in-person', 'online')
         .required(),
 
     meetingLink: Joi.string()
         .trim()
         .uri()
         .max(2048)
-        .when("venueType", {
-            is: "online",
+        .when('venueType', {
+            is: 'online',
             then: Joi.required(),
             otherwise: Joi.optional(),
         }),
@@ -25,8 +25,8 @@ import Joi from "joi";
         .trim()
         .min(1)
         .max(255)
-        .when("venueType", {
-            is: "in-person",
+        .when('venueType', {
+            is: 'in-person',
             then: Joi.required(),
             otherwise: Joi.optional(),
         }),
@@ -35,8 +35,8 @@ import Joi from "joi";
         .trim()
         .min(1)
         .max(255)
-        .when("venueType", {
-            is: "in-person",
+        .when('venueType', {
+            is: 'in-person',
             then: Joi.required(),
             otherwise: Joi.optional(),
         }),
@@ -45,13 +45,14 @@ import Joi from "joi";
         .trim()
         .min(1)
         .max(255)
-        .when("venueType", {
-            is: "in-person",
+        .when('venueType', {
+            is: 'in-person',
             then: Joi.required(),
             otherwise: Joi.optional(),
         }),
 
     capacity: Joi.number()
+        .integer()
         .min(1)
         .required(),
 
@@ -61,14 +62,14 @@ import Joi from "joi";
         .optional(),
 });
 
- const updateVenueSchema = Joi.object({
+const updateVenueSchema = Joi.object({
     name: Joi.string()
         .trim()
         .min(1)
         .max(255),
 
     venueType: Joi.string()
-        .valid("in-person", "online"),
+        .valid('in-person', 'online'),
 
     meetingLink: Joi.string()
         .trim()
@@ -91,12 +92,35 @@ import Joi from "joi";
         .max(255),
 
     capacity: Joi.number()
+        .integer()
         .min(1),
 
     accessibilityNotes: Joi.string()
         .trim()
         .max(500),
 })
-    .min(1);
+    .min(1)
+    .unknown(false)
+    .custom((value, helpers) => {
+        if (value.venueType === 'online' && !value.meetingLink) {
+            return helpers.message({
+                custom: 'meetingLink is required when venueType is online'
+            });
+        }
 
-export {createVenueSchema, updateVenueSchema}
+        if (value.venueType === 'in-person') {
+            const missingField = ['building', 'room', 'address']
+                .find((field) => !value[field]);
+
+            if (missingField) {
+                return helpers.message({
+                    custom:
+                        `${missingField} is required when venueType is in-person`
+                });
+            }
+        }
+
+        return value;
+    });
+
+export { createVenueSchema, updateVenueSchema };

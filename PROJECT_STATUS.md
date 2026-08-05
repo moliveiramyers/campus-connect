@@ -1,64 +1,44 @@
-# Week 05 Project Status Audit
+# Week 06 Project Status
 
-Audit date: 2026-08-03
+Audit date: 2026-08-05
 
-Reviewed baseline: `origin/main` at `9afbe05`
-
-Implementation branch: `fix/week05-rubric-compliance`
-
-Published service: `https://campus-connect-ckpe.onrender.com`
+Published service to redeploy:
+`https://campus-connect-ckpe.onrender.com`
 
 ## Rubric status
 
-| Requirement | Status | Evidence / remaining action |
+| Requirement | Local status | Evidence / external action |
 | --- | --- | --- |
-| Public deployment | Published; branch redeploy required | Render responds successfully at `/`, `/api-docs`, `/users`, `/events`, and `/venues`. Merge and redeploy this branch so Swagger executes against Render instead of localhost. |
-| Two CRUD collections | Complete | Users and Events implement GET all, GET by ID, POST, PUT, and DELETE. Venues provides an additional complete CRUD collection. |
-| Swagger documentation | Complete in branch | `swagger.json` validates and documents 15 operations with bodies, filters, and status responses. `/api-docs` loads `/swagger.json` dynamically from the current host. |
-| Error handling | Complete in branch | All Users, Events, and Venues controllers use `try/catch`; centralized middleware returns 400, 404, 409, or safe 500 responses. |
-| Validation | Complete in branch | Joi validates POST and PUT bodies, MongoDB ObjectIds, event dates, enums, URLs, and required fields. |
-| Individual contribution | Alejandro complete | Two verified Week 05 contributions are recorded in `CONTRIBUTIONS.md`. Other members must record only their own work. |
-| Video | External action pending | Record the required 5-8 minute video after the branch is merged and the public CRUD operations are verified. |
+| Four CRUD collections | Complete | Users, Events, Venues, and Registrations each expose GET all, GET one, POST, PUT, and DELETE. |
+| Swagger at `/api-docs` | Complete | `swagger.json` validates and contains 24 operations; protected operations declare GitHub OAuth. Redeploy before recording. |
+| POST/PUT validation | Complete | Joi schemas validate create and update bodies for all four collections. |
+| OAuth | Complete in code | GitHub login, callback, status, logout, persistent production sessions, and `401` protection are implemented. Configure the GitHub OAuth App and Render secrets. |
+| Protected collections | Complete | Venue and Registration POST/PUT/DELETE routes require authentication. |
+| GET tests | Complete | Separate GET-all and GET-by-ID tests exist for all four collections; all local checks pass. |
+| Individual contribution | Complete for Alejandro | Two Week 06 contributions are documented in `CONTRIBUTIONS.md`. |
+| Video and submission | External action pending | Record after pushing and redeploying; submit GitHub, Render, and YouTube links in Canvas. |
 
-## Pull request review
+## Verification result
 
-- PR #3, `Contribution documentation`, is open, mergeable, and requests
-  Alejandro's review.
-- Its changes are valid: Abel documents two contributions, moves user creation
-  to `POST /users`, and applies the update schema to `PUT /users/:id`.
-- Its failed CI check is not caused by those changes. The base branch changed
-  `GET /` to plain text while the existing test expects the API documentation
-  link in the health response.
-- This branch restores that response and also includes the same compatible
-  Users route corrections, so it remains safe if PR #3 is merged first.
+`npm run check` passes:
 
-## Corrections in this branch
+- Swagger/OpenAPI validation: 24 operations
+- Automated tests: 15 passed, 0 failed
+- GET route coverage: 8 distinct tests across 4 collections
+- Protected-route behavior: Venue and Registration POST/PUT return `401`
+  without an OAuth session
 
-- Restored a JSON health response with links to `/api-docs` and
-  `/swagger.json`.
-- Added a public `/swagger.json` route and made Swagger UI use the current
-  request host and protocol.
-- Corrected user creation to `POST /users` and user updates to use the partial
-  update schema.
-- Completed Events Swagger definitions, parameters, request bodies, tags, and
-  error responses.
-- Added documented error responses for Users and Venues.
-- Added explicit `try/catch` handling to every Venues controller.
-- Made MongoDB configuration accept the proposal's `MONGODB_URI` name while
-  preserving `MONGO_URI` compatibility.
-- Added Venue CRUD route tests and corrected the existing health and Users test
-  regressions.
-- Removed a duplicate production `nodemon` dependency and patched the reported
-  transitive npm vulnerability.
+## Before recording
 
-## Pre-submission checklist
-
-- Review and merge PR #3 or coordinate its duplicated Users route changes.
-- Review and merge this branch, then wait for Render to redeploy.
-- Confirm the public `/swagger.json` reports the Render host with HTTPS.
-- From the public Swagger UI, create, read, update, and delete records in two
-  collections and confirm the MongoDB Atlas records change.
-- Confirm invalid bodies and ObjectIds return 400, missing records return 404,
-  and unexpected failures return 500.
-- Have each team member document two truthful contributions.
-- Record the 5-8 minute video and submit the GitHub, Render, and YouTube links.
+1. Push the completed branch to the shared GitHub repository.
+2. In GitHub, create or update the OAuth App callback URL to
+   `https://campus-connect-ckpe.onrender.com/auth/github/callback`.
+3. In Render, configure `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`,
+   `GITHUB_CALLBACK_URL`, `MONGODB_URI`, and `SESSION_SECRET`.
+4. Redeploy and log in through `/auth/github`.
+5. Use the published `/api-docs` to demonstrate CRUD for all four collections,
+   including visible database changes and correct status codes.
+6. Demonstrate invalid POST and PUT bodies returning `400` and unauthenticated
+   protected writes returning `401`.
+7. Run or show `npm test`, highlighting all eight GET/GetAll tests.
+8. Record a 5–8 minute video and verify all three submission links are public.

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import requireAuth from "../middleware/auth.js";
 import validate from "../middleware/validate.js";
 import validateID from "../middleware/validateObjectId.js";
 import {
@@ -69,6 +70,7 @@ router.post(
     /*
         #swagger.tags = ['Venues']
         #swagger.description = 'Create a new venue.'
+        #swagger.security = [{ "githubOAuth": [] }]
 
         #swagger.parameters['body'] = {
             in: 'body',
@@ -86,10 +88,15 @@ router.post(
             description: 'Request validation failed.'
         }
 
+        #swagger.responses[401] = {
+            description: 'Authentication required.'
+        }
+
         #swagger.responses[500] = {
             description: 'Unexpected server error.'
         }
     */
+    requireAuth,
     validate(createVenueSchema),
     createVenue
 );
@@ -99,6 +106,7 @@ router.put(
     /*
         #swagger.tags = ['Venues']
         #swagger.description = 'Update an existing venue.'
+        #swagger.security = [{ "githubOAuth": [] }]
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -127,10 +135,15 @@ router.put(
             description: 'Invalid ID or request body.'
         }
 
+        #swagger.responses[401] = {
+            description: 'Authentication required.'
+        }
+
         #swagger.responses[500] = {
             description: 'Unexpected server error.'
         }
     */
+    requireAuth,
     validateID,
     validate(updateVenueSchema),
     updateVenue
@@ -141,6 +154,7 @@ router.delete(
     /*
         #swagger.tags = ['Venues']
         #swagger.description = 'Deactivate a venue (soft delete).'
+        #swagger.security = [{ "githubOAuth": [] }]
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -161,10 +175,15 @@ router.delete(
             description: 'Invalid MongoDB ObjectId.'
         }
 
+        #swagger.responses[401] = {
+            description: 'Authentication required.'
+        }
+
         #swagger.responses[500] = {
             description: 'Unexpected server error.'
         }
     */
+    requireAuth,
     validateID,
     deleteVenue
 );

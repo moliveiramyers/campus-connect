@@ -1,13 +1,12 @@
-# Week 05 Individual Contributions
+# Week 06 Individual Contributions
 
-Each team member must document at least two personal contributions toward the
-Week 05 deliverables. Contributors should replace the pending text only with
-work they personally completed.
+Each team member must document two truthful personal contributions toward the
+Week 06 deliverables. Team members should replace only their own pending cells.
 
 | Team member | Contribution 1 | Contribution 2 |
 | --- | --- | --- |
-| Alejandro Eliseo Valladares Crisanto | Implemented the Events collection with its Mongoose model, Joi validation, filters, and complete GET/POST/PUT/DELETE routes. | Integrated and documented the Users and Events APIs in executable Swagger UI at `/api-docs`, including automated OpenAPI and HTTP route checks. |
-| Abel Chiwandire | Implemented the Users collection with its Mongoose model, Joi validation, and complete GET/POST/PUT/DELETE routes. | Implemented custom error classes and a global error-handling middleware |
+| Alejandro Eliseo Valladares Crisanto | Implemented the Registrations collection with its Mongoose model, filters, Joi POST/PUT validation, complete CRUD controllers/routes, and Swagger definitions. | Integrated GitHub OAuth login/logout and persistent sessions, protected Venue and Registration write routes, and added passing GET/GetAll and authorization tests. |
+| Abel Chiwandire | Pending team member confirmation. | Pending team member confirmation. |
 | Carlos Enrique Guardado Cruz | Pending team member confirmation. | Pending team member confirmation. |
 | Corbin Gerhard / Francis Van Scheltema | Pending team member confirmation. | Pending team member confirmation. |
 | Lucky Ayei Inyang Eni | Pending team member confirmation. | Pending team member confirmation. |
@@ -15,7 +14,15 @@ work they personally completed.
 
 ## Alejandro's verification evidence
 
-- `src/models/events.js`, `src/validators/validateEvents.js`,
-  `src/controllers/events.js`, and `src/routes/events.js`
-- `swagger.json`, `/api-docs`, `scripts/validateSwagger.js`, and
-  `test/app.test.js`
+- Registrations: `src/models/registrations.js`,
+  `src/validators/validateRegistrations.js`,
+  `src/controllers/registrations.js`, and `src/routes/registrations.js`
+- OAuth and authorization: `src/config/passport.js`, `src/routes/auth.js`,
+  `src/middleware/auth.js`, and the session configuration in `src/app.js`
+- Tests and documentation: `test/app.test.js`, `swagger.js`, `swagger.json`,
+  `.env.example`, and `render.yaml`
+
+## Collections added since Week 05
+
+1. Venues
+2. Registrations

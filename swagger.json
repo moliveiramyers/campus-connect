@@ -2,14 +2,25 @@
   "swagger": "2.0",
   "info": {
     "title": "Campus Connect API",
-    "description": "Campus Connect API for managing users, events, and venues.",
-    "version": "1.0.0"
+    "description": "Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/github before using protected routes.",
+    "version": "2.0.0"
   },
   "host": "localhost:8080",
   "basePath": "/",
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "githubOAuth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://github.com/login/oauth/authorize",
+      "tokenUrl": "https://github.com/login/oauth/access_token",
+      "scopes": {
+        "user:email": "Read the authenticated GitHub account email"
+      }
+    }
+  },
   "consumes": [
     "application/json"
   ],
@@ -389,10 +400,18 @@
           "400": {
             "description": "Request validation failed."
           },
+          "401": {
+            "description": "Authentication required."
+          },
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "githubOAuth": []
+          }
+        ]
       }
     },
     "/venues/{id}": {
@@ -454,13 +473,21 @@
           "400": {
             "description": "Invalid ID or request body."
           },
+          "401": {
+            "description": "Authentication required."
+          },
           "404": {
             "description": "Venue not found."
           },
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "githubOAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -483,11 +510,284 @@
           "400": {
             "description": "Invalid MongoDB ObjectId."
           },
+          "401": {
+            "description": "Authentication required."
+          },
           "404": {
             "description": "Venue not found."
           },
           "500": {
             "description": "Unexpected server error."
+          }
+        },
+        "security": [
+          {
+            "githubOAuth": []
+          }
+        ]
+      }
+    },
+    "/registrations/": {
+      "get": {
+        "tags": [
+          "Registrations"
+        ],
+        "description": "Get all registrations. Supports userId, eventId, and status filters.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "eventId",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "enum": [
+              "registered",
+              "waitlisted",
+              "cancelled",
+              "attended"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of registrations."
+          },
+          "400": {
+            "description": "Invalid filter value."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Registrations"
+        ],
+        "description": "Create a registration. Requires an authenticated GitHub session.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Registration"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Registration created successfully."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "409": {
+            "description": "This user is already registered for this event."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "security": [
+          {
+            "githubOAuth": []
+          }
+        ]
+      }
+    },
+    "/registrations/{id}": {
+      "get": {
+        "tags": [
+          "Registrations"
+        ],
+        "description": "Get a registration by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Registration ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registration found successfully."
+          },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
+          "404": {
+            "description": "Registration not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Registrations"
+        ],
+        "description": "Update a registration. Requires an authenticated GitHub session.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Registration ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegistrationUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registration updated successfully."
+          },
+          "400": {
+            "description": "Invalid ID or request body."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "404": {
+            "description": "Registration not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "security": [
+          {
+            "githubOAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Registrations"
+        ],
+        "description": "Delete a registration. Requires an authenticated GitHub session.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Registration ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registration deleted successfully."
+          },
+          "400": {
+            "description": "Invalid MongoDB ObjectId."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "404": {
+            "description": "Registration not found."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "security": [
+          {
+            "githubOAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/github": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Start the GitHub OAuth login flow.",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to GitHub for authentication."
+          },
+          "503": {
+            "description": "OAuth environment variables are not configured."
+          }
+        }
+      }
+    },
+    "/auth/github/callback": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "GitHub OAuth callback. GitHub redirects the user here after authorization.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Authentication succeeded; redirect to Swagger UI."
+          },
+          "401": {
+            "description": "GitHub authentication failed."
+          }
+        }
+      }
+    },
+    "/auth/status": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Return the current OAuth session status.",
+        "responses": {
+          "200": {
+            "description": "Current authentication status."
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "End the current OAuth session.",
+        "responses": {
+          "200": {
+            "description": "Logout completed."
           }
         }
       }
@@ -671,6 +971,40 @@
         "accessibilityNotes": {
           "type": "string",
           "example": "Recently renovated and wheelchair accessible."
+        }
+      }
+    },
+    "Registration": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c8"
+        },
+        "eventId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c9"
+        },
+        "status": {
+          "type": "string",
+          "example": "registered"
+        },
+        "notes": {
+          "type": "string",
+          "example": "Requires wheelchair seating."
+        }
+      }
+    },
+    "RegistrationUpdate": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "attended"
+        },
+        "notes": {
+          "type": "string",
+          "example": "Checked in at the main entrance."
         }
       }
     }

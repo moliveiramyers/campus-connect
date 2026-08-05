@@ -25,6 +25,13 @@ class UnauthorizedError extends AppError {
     }
 }
 
+// 503 Service Unavailable (external integration is not configured or available)
+class ServiceUnavailableError extends AppError {
+    constructor(message = 'This service is temporarily unavailable') {
+        super(503, message);
+    }
+}
+
 // 403 Forbidden (Logged in, but no permission for this specific resource)
 class ForbiddenError extends AppError {
     constructor(message = 'You do not have permission to perform this action') {
@@ -50,6 +57,7 @@ export {
     AppError,
     ValidationError,
     UnauthorizedError,
+    ServiceUnavailableError,
     ForbiddenError,
     NotFoundError,
     ConflictError

@@ -2,6 +2,7 @@
 @userId = 66b4b7d9a2f1c3e4d5a6b7c8
 @eventId = 66b4b7d9a2f1c3e4d5a6b7c9
 @venueId = 66b4b7d9a2f1c3e4d5a6b7ca
+@registrationId = 66b4b7d9a2f1c3e4d5a6b7cb
 
 ### Health
 GET {{baseUrl}}/
@@ -9,74 +10,71 @@ GET {{baseUrl}}/
 ### Swagger document
 GET {{baseUrl}}/swagger.json
 
-### ==================== Users CRUD ====================
+### OAuth status
+GET {{baseUrl}}/auth/status
 
-### Create user
+### Begin OAuth login (open this URL in a browser)
+GET {{baseUrl}}/auth/github
 
-POST {{baseUrl}}/users
-Content-Type: application/json
-
-{
-    "name": "Alex Student",
-    "email": "alex.student@example.com",
-    "password": "Campus123!",
-    "role": "user"
-}
-
-### Get all users
+### Users: get all
 GET {{baseUrl}}/users
 
-### Get user by ID
+### Users: get one
 GET {{baseUrl}}/users/{{userId}}
 
-### Update user
-
-PUT {{baseUrl}}/users/{{userId}}
-Content-Type: application/json
-
-{
-    "name": "Alex Updated"
-}
-
-### Delete user
-DELETE {{baseUrl}}/users/{{userId}}
-
-### ==================== Events CRUD ====================
-
-### Create event
-POST {{baseUrl}}/events
-Content-Type: application/json
-
-{
-    "title": "Campus Technology Fair",
-    "description": "Students present technology projects to the campus community.",
-    "category": "Technology",
-    "startDate": "2026-08-15T15:00:00.000Z",
-    "endDate": "2026-08-15T18:00:00.000Z",
-    "venueId": "{{venueId}}",
-    "organizerId": "{{userId}}",
-    "capacity": 150,
-    "status": "published",
-    "imageUrl": "https://example.com/events/technology-fair.jpg"
-}
-
-### Get all events
+### Events: get all
 GET {{baseUrl}}/events
 
-### Filter events
-GET {{baseUrl}}/events?status=published&category=Technology
-
-### Get event by ID
+### Events: get one
 GET {{baseUrl}}/events/{{eventId}}
 
-### Update event
-PUT {{baseUrl}}/events/{{eventId}}
+### Venues: get all
+GET {{baseUrl}}/venues
+
+### Venues: get one
+GET {{baseUrl}}/venues/{{venueId}}
+
+### Venues: create (OAuth session required)
+POST {{baseUrl}}/venues
 Content-Type: application/json
 
 {
-    "capacity": 200,
-    "status": "published"
+  "name": "Student Center Room 201",
+  "venueType": "in-person",
+  "building": "Student Center",
+  "room": "201",
+  "address": "Campus Central",
+  "capacity": 80,
+  "accessibilityNotes": "Elevator access available."
 }
 
-### Delete event
-DELETE {{baseUrl}}/events/{{eventId}}
+### Registrations: get all
+GET {{baseUrl}}/registrations
+
+### Registrations: get one
+GET {{baseUrl}}/registrations/{{registrationId}}
+
+### Registrations: create (OAuth session required)
+POST {{baseUrl}}/registrations
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "eventId": "{{eventId}}",
+  "status": "registered",
+  "notes": "Requires wheelchair seating."
+}
+
+### Registrations: update (OAuth session required)
+PUT {{baseUrl}}/registrations/{{registrationId}}
+Content-Type: application/json
+
+{
+  "status": "attended"
+}
+
+### Registrations: delete (OAuth session required)
+DELETE {{baseUrl}}/registrations/{{registrationId}}
+
+### OAuth logout
+GET {{baseUrl}}/auth/logout

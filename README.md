@@ -1,19 +1,23 @@
 # CampusConnect API
 
-CampusConnect is a Node.js, Express, and MongoDB REST API for campus users and
-events. The Week 05 deliverable includes two complete CRUD collections,
-request validation, centralized error handling, and executable Swagger
-documentation.
+CampusConnect is a Node.js, Express, and MongoDB REST API for campus users,
+events, venues, and event registrations. It implements the four-collection
+CSE 341 Week 06 deliverable with validation, centralized errors, GitHub OAuth,
+protected writes, automated GET tests, and executable Swagger documentation.
 
-## Implemented
+## Implemented collections
 
-- Users: `GET`, `POST`, `PUT`, and `DELETE`
-- Events: `GET`, `POST`, `PUT`, and `DELETE`
-- Joi request validation and MongoDB ObjectId validation
-- Consistent `400`, `404`, `409`, and `500` error responses
-- Swagger UI at `/api-docs` and the raw OpenAPI document at `/swagger.json`
-- Automated HTTP route tests and OpenAPI validation
-- Render Blueprint configuration
+| Collection | Base route | Operations | POST/PUT validation | Protected writes |
+| --- | --- | --- | --- | --- |
+| Users | `/users` | GET all, GET one, POST, PUT, DELETE | Joi | No |
+| Events | `/events` | GET all, GET one, POST, PUT, DELETE | Joi | No |
+| Venues | `/venues` | GET all, GET one, POST, PUT, DELETE | Joi | GitHub OAuth |
+| Registrations | `/registrations` | GET all, GET one, POST, PUT, DELETE | Joi | GitHub OAuth |
+
+Venue and registration POST, PUT, and DELETE routes return `401` unless the
+request has an authenticated GitHub session. Invalid bodies and IDs return
+`400`; missing records return `404`; duplicate records return `409`; unexpected
+errors return a safe `500` response.
 
 ## Local setup
 
@@ -21,66 +25,74 @@ Requirements:
 
 - Node.js 20 or newer
 - A MongoDB Atlas database
+- A GitHub OAuth App
 
-Install dependencies and create the local environment file:
+Install dependencies and create the environment file:
 
 ```bash
 npm install
 cp .env.example .env
 ```
 
-Set `MONGODB_URI` in `.env`, then run:
+Set the values in `.env`, then start the application:
 
 ```bash
 npm run dev
 ```
 
-The API starts on `http://localhost:8080` by default. Open
-`http://localhost:8080/api-docs` to execute requests from Swagger UI.
+The API starts at `http://localhost:8080`. Swagger UI is available at
+`http://localhost:8080/api-docs` and the raw contract at `/swagger.json`.
 
-## Routes
+## GitHub OAuth setup
 
-| Method | Route | Description |
-| --- | --- | --- |
-| GET | `/users` | Get all users |
-| GET | `/users/:id` | Get one user |
-| POST | `/users` | Create a user |
-| PUT | `/users/:id` | Update one or more user fields |
-| DELETE | `/users/:id` | Delete a user |
-| GET | `/events` | Get events, with optional filters |
-| GET | `/events/:id` | Get one event |
-| POST | `/events` | Create an event |
-| PUT | `/events/:id` | Update one or more event fields |
-| DELETE | `/events/:id` | Delete an event |
+Create an OAuth App under GitHub **Settings > Developer settings > OAuth Apps**.
+For local development, use this authorization callback URL:
 
-All graded operations are documented in `swagger.json`. The API also exposes
-the current-host version of that document at `/swagger.json`, so Swagger UI
-executes requests against the same local or Render server from which it loads.
+```text
+http://localhost:8080/auth/github/callback
+```
 
-## Checks
+Set its client ID and secret as `GITHUB_CLIENT_ID` and
+`GITHUB_CLIENT_SECRET`. Also set a long random `SESSION_SECRET`. For Render,
+register the published callback URL as:
+
+```text
+https://YOUR-SERVICE.onrender.com/auth/github/callback
+```
+
+Then set that exact value as `GITHUB_CALLBACK_URL` in Render. Open
+`/auth/github` in the browser to log in. A successful login returns to
+`/api-docs`; Swagger requests on the same site use the session cookie. Use
+`/auth/status` to verify the session and `/auth/logout` to end it.
+
+## Automated checks
 
 ```bash
 npm run check
 ```
 
-This validates the OpenAPI contract and runs route-level tests for both
-collections without connecting to a production database.
+This validates `swagger.json` and runs isolated HTTP tests without connecting
+to the production database. The test suite includes separate GET-all and
+GET-by-ID tests for each of the four collections, protected-route checks, and
+validation/error-response checks.
 
 ## Render deployment
 
-The included `render.yaml` defines the build command, start command, health
-check, and required environment variable. Create or sync a Render Blueprint,
-provide the secret `MONGODB_URI` value in the Render dashboard, deploy the
-default branch, and verify:
+`render.yaml` defines the Node service, health check, MongoDB setting, session
+secret, and GitHub OAuth settings. In the Render dashboard, provide these
+secrets and redeploy:
 
-- `https://YOUR-SERVICE.onrender.com/`
-- `https://YOUR-SERVICE.onrender.com/api-docs`
-- `https://YOUR-SERVICE.onrender.com/swagger.json`
-- CRUD operations from the published Swagger UI
+- `MONGODB_URI`
+- `GITHUB_CLIENT_ID`
+- `GITHUB_CLIENT_SECRET`
+- `GITHUB_CALLBACK_URL` (recommended when the OAuth callback is registered)
 
-The shared Week 05 deployment is available at
+After deployment, verify `/`, `/api-docs`, `/swagger.json`, `/auth/github`, and
+all four collections from the published site. Never commit `.env`, database
+credentials, OAuth secrets, or session secrets.
+
+The current team service is:
 `https://campus-connect-ckpe.onrender.com/api-docs`.
 
-Never commit `.env` or database credentials. Render deployment and the required
-5-8 minute YouTube video are external submission steps and cannot be completed
-by the source code alone.
+The GitHub push, Render redeployment, database demonstration, and 5–8 minute
+YouTube recording are external submission steps.

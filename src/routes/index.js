@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { createRequire } from 'module';
 import swaggerUi from 'swagger-ui-express';
 
+import authRouter from './auth.js';
 import eventRouter from './events.js';
+import registrationRouter from './registrations.js';
 import userRouter from './users.js';
 import venueRouter from './venues.js';
 
@@ -23,7 +25,12 @@ router.get('/', (req, res) => {
         name: 'Campus Connect API',
         status: 'ok',
         documentation: '/api-docs',
-        swagger: '/swagger.json'
+        swagger: '/swagger.json',
+        authentication: {
+            login: '/auth/github',
+            status: '/auth/status',
+            logout: '/auth/logout'
+        }
     });
 });
 
@@ -45,5 +52,7 @@ router.use(
 router.use('/users', userRouter);
 router.use('/events', eventRouter);
 router.use('/venues', venueRouter);
+router.use('/registrations', registrationRouter);
+router.use('/auth', authRouter);
 
 export default router;
