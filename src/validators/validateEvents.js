@@ -45,7 +45,20 @@ const updateEventSchema = Joi.object({
     ...sharedFields
 })
     .min(1)
-    .unknown(false);
+    .unknown(false)
+    .custom((value, helpers) => {
+        if (
+            value.startDate
+            && value.endDate
+            && value.endDate <= value.startDate
+        ) {
+            return helpers.message({
+                custom: 'endDate must be later than startDate'
+            });
+        }
+
+        return value;
+    });
 
 export {
     createEventSchema,

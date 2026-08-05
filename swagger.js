@@ -14,13 +14,24 @@ const doc = {
     info: {
         title: 'Campus Connect API',
         description:
-            'Campus Connect API for managing users, events, and venues.',
-        version: '1.0.0'
+            'Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/github before using protected routes.',
+        version: '2.0.0'
     },
     host: serverHost,
     schemes: schemesList,
     consumes: ['application/json'],
     produces: ['application/json'],
+    securityDefinitions: {
+        githubOAuth: {
+            type: 'oauth2',
+            flow: 'accessCode',
+            authorizationUrl: 'https://github.com/login/oauth/authorize',
+            tokenUrl: 'https://github.com/login/oauth/access_token',
+            scopes: {
+                'user:email': 'Read the authenticated GitHub account email'
+            }
+        }
+    },
     definitions: {
         Error: {
             status: 'fail',
@@ -74,6 +85,16 @@ const doc = {
             capacity: 250,
             accessibilityNotes:
                 'Recently renovated and wheelchair accessible.'
+        },
+        Registration: {
+            userId: '66b4b7d9a2f1c3e4d5a6b7c8',
+            eventId: '66b4b7d9a2f1c3e4d5a6b7c9',
+            status: 'registered',
+            notes: 'Requires wheelchair seating.'
+        },
+        RegistrationUpdate: {
+            status: 'attended',
+            notes: 'Checked in at the main entrance.'
         }
     }
 };
