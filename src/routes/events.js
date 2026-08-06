@@ -7,6 +7,7 @@ import {
     createEventSchema,
     updateEventSchema
 } from '../validators/validateEvents.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -57,6 +58,8 @@ router.post(
         #swagger.responses[400] = { description: 'Request validation failed.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     validate(createEventSchema),
     event.createEvent
 );
@@ -77,6 +80,8 @@ router.put(
         #swagger.responses[404] = { description: 'Event not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     validateID,
     validate(updateEventSchema),
     event.updateEvent
@@ -93,6 +98,8 @@ router.delete(
         #swagger.responses[404] = { description: 'Event not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     validateID,
     event.deleteEvent
 );

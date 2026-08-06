@@ -1,10 +1,12 @@
 import { NotFoundError } from '../utils/error.js';
 import { hashPassword } from '../utils/password.js';
 import User from '../models/users.js';
+import { createLocalUser, updateUserProfile } from '../services/userService.js';
 
 const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
+        
         res.status(200).json(users);
     } catch (error) {
         next(error);
@@ -27,23 +29,9 @@ const getUserById = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
     try {
-        const { password, ...userData } = req.body;
+        const newUser = await createLocalUser(req.body);
 
-        const passwordHash = await hashPassword(password);
-
-        const authMethods = [
-            {
-                provider: 'local',
-                passwordHash
-            }
-        ];
-
-        const createdUser = await User.create({
-            ...userData,
-            authMethods
-        });
-
-        res.status(201).json(createdUser);
+        res.status(201).json(newUser);
     } catch (error) {
         next(error);
     }
@@ -51,32 +39,8 @@ const createUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
     try {
-        const { password, ...userData } = req.body;
-        const user = await User.findById(req.params.id);
+        const updatedUser = await updateUserProfile(req.params.id, req.body);
 
-        if (!user) {
-            throw new NotFoundError('User not found for update');
-        }
-
-        Object.assign(user, userData);
-
-        if (password) {
-            const passwordHash = await hashPassword(password);
-            const localMethod = user.authMethods.find(
-                (method) => method.provider === 'local'
-            );
-
-            if (localMethod) {
-                localMethod.passwordHash = passwordHash;
-            } else {
-                user.authMethods.push({
-                    provider: 'local',
-                    passwordHash
-                });
-            }
-        }
-
-        const updatedUser = await user.save();
         res.status(200).json(updatedUser);
     } catch (error) {
         next(error);

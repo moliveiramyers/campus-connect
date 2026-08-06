@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import * as registration from '../controllers/registrations.js';
-import requireAuth from '../middleware/auth.js';
+import { requireAuth, requireRole, authorizeRegistrationOwner } from '../middleware/auth.js';
 import validate from '../middleware/validate.js';
 import validateID from '../middleware/validateObjectId.js';
 import {
@@ -23,6 +23,8 @@ router.get(
         #swagger.responses[400] = { description: 'Invalid filter value.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     registration.getAllRegistrations
 );
 
@@ -37,6 +39,8 @@ router.get(
         #swagger.responses[404] = { description: 'Registration not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    authorizeRegistrationOwner,
     validateID,
     registration.getRegistrationById
 );
@@ -74,6 +78,7 @@ router.put(
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
+    authorizeRegistrationOwner,
     validateID,
     validate(updateRegistrationSchema),
     registration.updateRegistration
@@ -93,6 +98,7 @@ router.delete(
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
+    authorizeRegistrationOwner,
     validateID,
     registration.deleteRegistration
 );

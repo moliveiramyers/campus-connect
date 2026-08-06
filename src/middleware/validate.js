@@ -1,6 +1,7 @@
 import { ValidationError } from '../utils/error.js';
 
-const validate = (schema) => {
+const validate = (schemaOrFactory) => {
+    const schema = typeof schemaOrFactory === 'function' ? schemaOrFactory() : schemaOrFactory;
     return (req, res, next) => {
         const { error, value } = schema.validate(req.body, { abortEarly: false });
 

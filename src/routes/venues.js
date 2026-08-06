@@ -1,18 +1,12 @@
 import { Router } from "express";
-import requireAuth from "../middleware/auth.js";
+import { requireAuth, requireRole } from "../middleware/auth.js";
 import validate from "../middleware/validate.js";
 import validateID from "../middleware/validateObjectId.js";
 import {
     createVenueSchema,
     updateVenueSchema,
 } from "../validators/validateVenue.js";
-import {
-    getAllVenues,
-    getVenueById,
-    createVenue,
-    updateVenue,
-    deleteVenue,
-} from "../controllers/venues.js";
+import * as venue from "../controllers/venues.js";
 
 const router = Router();
 
@@ -29,7 +23,7 @@ router.get(
             description: 'Unexpected server error.'
         }
     */
-    getAllVenues
+    venue.getAllVenues
 );
 
 router.get(
@@ -62,7 +56,7 @@ router.get(
         }
     */
     validateID,
-    getVenueById
+    venue.getVenueById
 );
 
 router.post(
@@ -97,8 +91,9 @@ router.post(
         }
     */
     requireAuth,
+    requireRole({ roles: ["admin"] }),
     validate(createVenueSchema),
-    createVenue
+    venue.createVenue
 );
 
 router.put(
@@ -144,9 +139,10 @@ router.put(
         }
     */
     requireAuth,
+    requireRole({ roles: ["admin"] }),
     validateID,
     validate(updateVenueSchema),
-    updateVenue
+    venue.updateVenue
 );
 
 router.delete(
@@ -184,8 +180,9 @@ router.delete(
         }
     */
     requireAuth,
+    requireRole({ roles: ["admin"] }),
     validateID,
-    deleteVenue
+    venue.deleteVenue
 );
 
 export default router;

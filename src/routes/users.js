@@ -3,10 +3,12 @@ import express from 'express';
 import * as user from '../controllers/users.js';
 import validate from '../middleware/validate.js';
 import {
-    createUserSchema,
-    updateUserSchema
+    adminCreateUserSchema,
+    adminUpdateUserSchema,
+    publicUpdateUserSchema
 } from '../validators/validateUsers.js';
 import validateID from '../middleware/validateObjectId.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -23,7 +25,11 @@ router.get('/',
             description: 'Unexpected server error.'
         }
     */
-    user.getAllUsers);
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
+    user.getAllUsers
+);
+    
 router.get('/:id',
     /*
        #swagger.tags = ['Users']
@@ -52,7 +58,11 @@ router.get('/:id',
            description: 'Unexpected server error.'
        }
    */
-    validateID, user.getUserById);
+    requireAuth,
+    requireRole({ roles: ['admin'], allowSelf: true }),
+    validateID,
+    user.getUserById
+);
     
 router.post('/',
     /*
@@ -83,7 +93,10 @@ router.post('/',
           description: 'Unexpected server error.'
       }
   */
-    validate(createUserSchema), user.createUser);
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
+    validate(adminCreateUserSchema),
+    user.createUser);
 
 router.put('/:id',
     /*
@@ -125,7 +138,15 @@ router.put('/:id',
            description: 'Unexpected server error.'
        }
    */
-    validateID, validate(updateUserSchema), user.updateUser);
+    requireAuth,
+    requireRole({ roles: ['admin'], allowSelf: true }),
+    validateID,
+    validate(req => req.user.role === 'admin'
+        ? adminUpdateUserSchema
+        : publicUpdateUserSchema
+    ),
+    user.updateUser
+);
 
 router.delete('/:id',
     /*
@@ -155,6 +176,9 @@ router.delete('/:id',
            description: 'Unexpected server error.'
        }
    */
-    validateID, user.deleteUser);
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
+    validateID,
+    user.deleteUser);
 
 export default router;
