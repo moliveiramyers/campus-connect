@@ -17,8 +17,6 @@ router.get('/',
         #swagger.tags = ['Users']
         #swagger.description = 'Get all users. Requires an authenticated session with admin privileges.'
 
-        #swagger.security = [{ "sessionAuth": [] }]
-
         #swagger.responses[200] = {
             description: 'List of all users.'
         }
@@ -36,8 +34,6 @@ router.get('/:id',
     /*
         #swagger.tags = ['Users']
         #swagger.description = 'Get a user by its ID. Requires an authenticated session with admin privileges or the user themselves.'
-
-        #swagger.security = [{ "sessionAuth": [] }]
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -73,8 +69,6 @@ router.post('/',
       #swagger.tags = ['Users']
       #swagger.description = 'Register a new user. Requires an authenticated session with admin privileges.'
 
-      #swagger.security = [{ "sessionAuth": [] }]
-
       #swagger.parameters['body'] = {
           in: 'body',
           required: true,
@@ -108,8 +102,6 @@ router.put('/:id',
     /*
        #swagger.tags = ['Users']
        #swagger.description = 'Update an existing user. Requires an authenticated session with admin privileges or the user themselves.'
-
-       #swagger.security = [{ "sessionAuth": [] }]
 
        #swagger.parameters['id'] = {
            in: 'path',
@@ -160,8 +152,6 @@ router.delete('/:id',
     /*
        #swagger.tags = ['Users']
        #swagger.description = 'Delete a user (soft delete). Requires an authenticated session with admin privileges or the user themselves.'
-
-       #swagger.security = [{ "sessionAuth": [] }]
 
        #swagger.parameters['id'] = {
            in: 'path',

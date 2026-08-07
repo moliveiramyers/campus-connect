@@ -16,7 +16,6 @@ router.get(
     /*
         #swagger.tags = ['Registrations']
         #swagger.description = 'Get all registrations. Supports userId, eventId, and status filters. Requires an authenticated session with admin privileges.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['userId'] = { in: 'query', type: 'string', required: false }
         #swagger.parameters['eventId'] = { in: 'query', type: 'string', required: false }
         #swagger.parameters['status'] = { in: 'query', type: 'string', required: false, enum: ['registered', 'waitlisted', 'cancelled', 'attended'] }
@@ -34,7 +33,6 @@ router.get(
     /*
         #swagger.tags = ['Registrations']
         #swagger.description = 'Get a registration by its ID. Requires an authenticated session with admin privileges or the owner of the registration.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Registration found successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }
@@ -52,7 +50,6 @@ router.post(
     /*
         #swagger.tags = ['Registrations']
         #swagger.description = 'Create a registration. Requires an authenticated session.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/Registration' } }
         #swagger.responses[201] = { description: 'Registration created successfully.' }
         #swagger.responses[400] = { description: 'Request validation failed.' }
@@ -70,7 +67,6 @@ router.put(
     /*
         #swagger.tags = ['Registrations']
         #swagger.description = 'Update a registration. Requires an authenticated session.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/RegistrationUpdate' } }
         #swagger.responses[200] = { description: 'Registration updated successfully.' }
@@ -91,7 +87,6 @@ router.delete(
     /*
         #swagger.tags = ['Registrations']
         #swagger.description = 'Delete a registration. Requires an authenticated session.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Registration deleted successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }

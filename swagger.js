@@ -22,12 +22,6 @@ const doc = {
     consumes: ['application/json'],
     produces: ['application/json'],
     securityDefinitions: {
-        sessionAuth: {
-            type: 'apiKey',
-            in: 'cookie',
-            name: 'campus.connect.sid',
-            description: 'Session cookie established after local login or GitHub OAuth.'
-        },
         githubOAuth: {
             type: 'oauth2',
             flow: 'accessCode',

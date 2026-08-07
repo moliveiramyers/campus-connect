@@ -49,7 +49,6 @@ router.post(
     /*
         #swagger.tags = ['Events']
         #swagger.description = 'Create a new event. Requires an authenticated session with admin privileges.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['body'] = {
             in: 'body',
             required: true,
@@ -70,7 +69,6 @@ router.put(
     /*
         #swagger.tags = ['Events']
         #swagger.description = 'Update one or more fields on an event. Requires an authenticated session with admin privileges.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['id'] = { in: 'path', description: 'Event ID', required: true, type: 'string' }
         #swagger.parameters['body'] = {
             in: 'body',
@@ -94,7 +92,6 @@ router.delete(
     /*
         #swagger.tags = ['Events']
         #swagger.description = 'Delete an event. Requires an authenticated session with admin privileges.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.parameters['id'] = { in: 'path', description: 'Event ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Event deleted successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }

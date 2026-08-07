@@ -87,7 +87,6 @@ router.get('/logout',
     /*
         #swagger.tags = ['Authentication']
         #swagger.description = 'End the current OAuth session.'
-        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.responses[200] = { description: 'Logout completed.' }
     */
     requireAuth,
