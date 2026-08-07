@@ -35,7 +35,7 @@ const authorizeRegistrationOwner = async (req, res, next) => {
         return next();
     }
 
-    if (req.user.id !== registration.userId) {
+    if (req.user.id !== registration.userId.toString()) {
         throw new ForbiddenError('You do not have permission to perform this action');
     }
 

@@ -51,14 +51,7 @@ router.post(
           in: 'body',
           required: true,
           schema: {
-              type: 'object',
-              required: ['name', 'email', 'password'],
-              properties: {
-                  name: { type: 'string', example: 'Jane Doe' },
-                  email: { type: 'string', format: 'email', example: 'jane@example.com' },
-                  password: { type: 'string', example: 'StrongPassword123' },
-                  profileImage: { type: 'string', format: 'uri', example: 'https://example.com/avatar.jpg' }
-              }
+              $ref: '#/definitions/NewUser'
           }
       }
       #swagger.responses[201] = { description: 'User registered successfully.' }
@@ -78,11 +71,7 @@ router.post(
           in: 'body',
           required: true,
           schema: {
-              type: 'object',
-              required: ['email', 'password'],
-              properties: {
-                  email: { type: 'string', format: 'email', example: 'jane@example.com' },
-                  password: { type: 'string', example: 'StrongPassword123' }
+                $ref: '#/definitions/LoginRequest'
               }
           }
       }

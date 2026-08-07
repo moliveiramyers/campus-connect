@@ -1,23 +1,24 @@
 # CampusConnect API
 
 CampusConnect is a Node.js, Express, and MongoDB REST API for campus users,
-events, venues, and event registrations. It implements the four-collection
-CSE 341 Week 06 deliverable with validation, centralized errors, GitHub OAuth,
-protected writes, automated GET tests, and executable Swagger documentation.
+events, venues, and event registrations. It provides CRUD-style endpoints for
+four collections with validation, centralized error handling, Swagger
+documentation, and session-based authentication.
 
 ## Implemented collections
 
-| Collection | Base route | Operations | POST/PUT validation | Protected writes |
+| Collection | Base route | Operations | Validation | Protection |
 | --- | --- | --- | --- | --- |
-| Users | `/users` | GET all, GET one, POST, PUT, DELETE | Joi | No |
-| Events | `/events` | GET all, GET one, POST, PUT, DELETE | Joi | No |
-| Venues | `/venues` | GET all, GET one, POST, PUT, DELETE | Joi | GitHub OAuth |
-| Registrations | `/registrations` | GET all, GET one, POST, PUT, DELETE | Joi | GitHub OAuth |
+| Users | `/users` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated access; admins can manage all users, and users can access their own records |
+| Events | `/events` | GET all, GET one, POST, PUT, DELETE | Joi | No special protection in the current build |
+| Venues | `/venues` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated admin writes |
+| Registrations | `/registrations` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated access; owners can manage their own registrations, admins can manage all |
 
-Venue and registration POST, PUT, and DELETE routes return `401` unless the
-request has an authenticated GitHub session. Invalid bodies and IDs return
-`400`; missing records return `404`; duplicate records return `409`; unexpected
-errors return a safe `500` response.
+Authenticated sessions are required for protected operations. GitHub OAuth is
+available as an authentication option, but the protected routes are session-based
+rather than GitHub-only. Invalid bodies and IDs return `400`; missing records
+return `404`; duplicate records return `409`; unexpected errors return a safe
+`500` response.
 
 ## Local setup
 

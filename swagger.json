@@ -174,7 +174,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Delete a user. Requires an authenticated session with admin privileges.",
+        "description": "Delete a user (soft delete). Requires an authenticated session with admin privileges or the user themselves.",
         "parameters": [
           {
             "name": "id",
@@ -847,89 +847,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "object"
-                },
-                "required": {
-                  "type": "array",
-                  "example": [
-                    "name",
-                    "email",
-                    "password"
-                  ],
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "Jane Doe"
-                        }
-                      }
-                    },
-                    "email": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "format": {
-                          "type": "string",
-                          "example": "email"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "jane@example.com"
-                        }
-                      }
-                    },
-                    "password": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "StrongPassword123"
-                        }
-                      }
-                    },
-                    "profileImage": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "format": {
-                          "type": "string",
-                          "example": "uri"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "https://example.com/avatar.jpg"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              "$ref": "#/definitions/NewUser"
             }
           }
         ],
@@ -958,58 +876,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "object"
-                },
-                "required": {
-                  "type": "array",
-                  "example": [
-                    "email",
-                    "password"
-                  ],
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "email": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "format": {
-                          "type": "string",
-                          "example": "email"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "jane@example.com"
-                        }
-                      }
-                    },
-                    "password": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        },
-                        "example": {
-                          "type": "string",
-                          "example": "StrongPassword123"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              "$ref": "#/definitions/LoginRequest"
             }
           }
         ],
@@ -1081,6 +948,40 @@
         "profileImage": {
           "type": "string",
           "example": "https://example.com/profile-image.jpg"
+        }
+      }
+    },
+    "NewUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Jane Doe"
+        },
+        "email": {
+          "type": "string",
+          "example": "jane.doe@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SecurePass123!"
+        },
+        "profileImage": {
+          "type": "string",
+          "example": "https://example.com/profile-image.jpg"
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "jane.doe@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SecurePass123!"
         }
       }
     },

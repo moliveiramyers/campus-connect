@@ -50,6 +50,16 @@ const doc = {
             role: 'user',
             profileImage: 'https://example.com/profile-image.jpg'
         },
+        NewUser: {
+            name: 'Jane Doe',
+            email: 'jane.doe@example.com',
+            password: 'SecurePass123!',
+            profileImage: 'https://example.com/profile-image.jpg'
+        },
+        LoginRequest: {
+            email: 'jane.doe@example.com',
+            password: 'SecurePass123!'
+        },
         UserUpdate: {
             name: 'Jane Smith',
             profileImage: 'https://example.com/new-profile-image.jpg'
