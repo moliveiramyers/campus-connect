@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Campus Connect API",
-    "description": "Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/github before using protected routes.",
+    "description": "Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/login or /auth/github before using protected routes.",
     "version": "2.0.0"
   },
   "host": "localhost:8080",
@@ -11,6 +11,12 @@
     "http"
   ],
   "securityDefinitions": {
+    "sessionAuth": {
+      "type": "apiKey",
+      "in": "cookie",
+      "name": "campus.connect.sid",
+      "description": "Session cookie established after local login or GitHub OAuth."
+    },
     "githubOAuth": {
       "type": "oauth2",
       "flow": "accessCode",
@@ -41,7 +47,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -71,7 +82,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/users/{id}": {
@@ -102,7 +118,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -142,7 +163,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -171,7 +197,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/events/": {
@@ -263,7 +294,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/events/{id}": {
@@ -331,7 +367,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -360,7 +401,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     },
     "/venues/": {
@@ -409,7 +455,7 @@
         },
         "security": [
           {
-            "githubOAuth": []
+            "sessionAuth": []
           }
         ]
       }
@@ -485,7 +531,7 @@
         },
         "security": [
           {
-            "githubOAuth": []
+            "sessionAuth": []
           }
         ]
       },
@@ -522,7 +568,7 @@
         },
         "security": [
           {
-            "githubOAuth": []
+            "sessionAuth": []
           }
         ]
       }
@@ -569,7 +615,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -605,7 +656,7 @@
         },
         "security": [
           {
-            "githubOAuth": []
+            "sessionAuth": []
           }
         ]
       }
@@ -638,7 +689,12 @@
           "500": {
             "description": "Unexpected server error."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -681,7 +737,7 @@
         },
         "security": [
           {
-            "githubOAuth": []
+            "sessionAuth": []
           }
         ]
       },
@@ -718,7 +774,7 @@
         },
         "security": [
           {
-            "githubOAuth": []
+            "sessionAuth": []
           }
         ]
       }
@@ -779,6 +835,197 @@
         }
       }
     },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Register a new user with email, password, name, and optional profile image.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "required": {
+                  "type": "array",
+                  "example": [
+                    "name",
+                    "email",
+                    "password"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Jane Doe"
+                        }
+                      }
+                    },
+                    "email": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "format": {
+                          "type": "string",
+                          "example": "email"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "jane@example.com"
+                        }
+                      }
+                    },
+                    "password": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "StrongPassword123"
+                        }
+                      }
+                    },
+                    "profileImage": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "format": {
+                          "type": "string",
+                          "example": "uri"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "https://example.com/avatar.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "409": {
+            "description": "A user with this email already exists."
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Log in with local credentials and establish a session.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "required": {
+                  "type": "array",
+                  "example": [
+                    "email",
+                    "password"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "format": {
+                          "type": "string",
+                          "example": "email"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "jane@example.com"
+                        }
+                      }
+                    },
+                    "password": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "StrongPassword123"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "401": {
+            "description": "Invalid email or password."
+          }
+        }
+      }
+    },
     "/auth/logout": {
       "get": {
         "tags": [
@@ -789,7 +1036,12 @@
           "200": {
             "description": "Logout completed."
           }
-        }
+        },
+        "security": [
+          {
+            "sessionAuth": []
+          }
+        ]
       }
     }
   },

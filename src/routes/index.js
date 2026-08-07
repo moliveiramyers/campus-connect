@@ -27,7 +27,8 @@ router.get('/', (req, res) => {
         documentation: '/api-docs',
         swagger: '/swagger.json',
         authentication: {
-            login: '/auth/github',
+            localLogin: '/auth/login',
+            githubLogin: '/auth/github',
             status: '/auth/status',
             logout: '/auth/logout'
         }

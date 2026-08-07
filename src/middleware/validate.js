@@ -1,10 +1,10 @@
 import { ValidationError } from '../utils/error.js';
 
 const validate = (schemaOrFactory) => {
-    const schema = typeof schemaOrFactory === 'function' ? schemaOrFactory() : schemaOrFactory;
     return (req, res, next) => {
-        const { error, value } = schema.validate(req.body, { abortEarly: false });
+        const schema = typeof schemaOrFactory === 'function' ? schemaOrFactory() : schemaOrFactory;
 
+        const { error, value } = schema.validate(req.body, { abortEarly: false });
         if (error) {
             const errorDetails = error.details.map((err) => ({
                 field: err.path.join('.'),

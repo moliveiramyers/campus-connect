@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import requireGitHubConfiguration from '../middleware/githubConfig.js';
 import * as authController from '../controllers/auth.js';
-import { validate } from '../middleware/validate.js';
+import validate from '../middleware/validate.js';
 import { publicCreateUserSchema, authLoginSchema } from '../validators/validateUsers.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 
@@ -98,6 +98,7 @@ router.get('/logout',
     /*
         #swagger.tags = ['Authentication']
         #swagger.description = 'End the current OAuth session.'
+        #swagger.security = [{ "sessionAuth": [] }]
         #swagger.responses[200] = { description: 'Logout completed.' }
     */
     requireAuth,

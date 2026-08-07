@@ -15,7 +15,9 @@ const router = express.Router();
 router.get('/',
     /*
         #swagger.tags = ['Users']
-        #swagger.description = 'Get all users.'
+        #swagger.description = 'Get all users. Requires an authenticated session with admin privileges.'
+
+        #swagger.security = [{ "sessionAuth": [] }]
 
         #swagger.responses[200] = {
             description: 'List of all users.'
@@ -32,31 +34,33 @@ router.get('/',
     
 router.get('/:id',
     /*
-       #swagger.tags = ['Users']
-       #swagger.description = 'Get a user by its ID.'
+        #swagger.tags = ['Users']
+        #swagger.description = 'Get a user by its ID. Requires an authenticated session with admin privileges or the user themselves.'
 
-       #swagger.parameters['id'] = {
-           in: 'path',
-           description: 'User ID',
-           required: true,
-           type: 'string'
-       }
+        #swagger.security = [{ "sessionAuth": [] }]
 
-       #swagger.responses[200] = {
-           description: 'User found successfully.'
-       }
+        #swagger.parameters['id'] = {
+            in: 'path',
+            description: 'User ID',
+            required: true,
+            type: 'string'
+        }
 
-       #swagger.responses[404] = {
-           description: 'User not found.'
-       }
+        #swagger.responses[200] = {
+            description: 'User found successfully.'
+        }
 
-       #swagger.responses[400] = {
-           description: 'Invalid MongoDB ObjectId.'
-       }
+        #swagger.responses[404] = {
+            description: 'User not found.'
+        }
 
-       #swagger.responses[500] = {
-           description: 'Unexpected server error.'
-       }
+        #swagger.responses[400] = {
+            description: 'Invalid MongoDB ObjectId.'
+        }
+
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
+        }
    */
     requireAuth,
     requireRole({ roles: ['admin'], allowSelf: true }),
@@ -67,7 +71,9 @@ router.get('/:id',
 router.post('/',
     /*
       #swagger.tags = ['Users']
-      #swagger.description = 'Register a new user.'
+      #swagger.description = 'Register a new user. Requires an authenticated session with admin privileges.'
+
+      #swagger.security = [{ "sessionAuth": [] }]
 
       #swagger.parameters['body'] = {
           in: 'body',
@@ -101,7 +107,9 @@ router.post('/',
 router.put('/:id',
     /*
        #swagger.tags = ['Users']
-       #swagger.description = 'Update an existing user.'
+       #swagger.description = 'Update an existing user. Requires an authenticated session with admin privileges or the user themselves.'
+
+       #swagger.security = [{ "sessionAuth": [] }]
 
        #swagger.parameters['id'] = {
            in: 'path',
@@ -151,7 +159,9 @@ router.put('/:id',
 router.delete('/:id',
     /*
        #swagger.tags = ['Users']
-       #swagger.description = 'Delete a user.'
+       #swagger.description = 'Delete a user. Requires an authenticated session with admin privileges.'
+
+       #swagger.security = [{ "sessionAuth": [] }]
 
        #swagger.parameters['id'] = {
            in: 'path',

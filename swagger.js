@@ -14,7 +14,7 @@ const doc = {
     info: {
         title: 'Campus Connect API',
         description:
-            'Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/github before using protected routes.',
+            'Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/login or /auth/github before using protected routes.',
         version: '2.0.0'
     },
     host: serverHost,
@@ -22,6 +22,12 @@ const doc = {
     consumes: ['application/json'],
     produces: ['application/json'],
     securityDefinitions: {
+        sessionAuth: {
+            type: 'apiKey',
+            in: 'cookie',
+            name: 'campus.connect.sid',
+            description: 'Session cookie established after local login or GitHub OAuth.'
+        },
         githubOAuth: {
             type: 'oauth2',
             flow: 'accessCode',

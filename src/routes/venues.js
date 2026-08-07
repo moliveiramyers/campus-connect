@@ -64,7 +64,7 @@ router.post(
     /*
         #swagger.tags = ['Venues']
         #swagger.description = 'Create a new venue.'
-        #swagger.security = [{ "githubOAuth": [] }]
+        #swagger.security = [{ "sessionAuth": [] }]
 
         #swagger.parameters['body'] = {
             in: 'body',
@@ -101,7 +101,7 @@ router.put(
     /*
         #swagger.tags = ['Venues']
         #swagger.description = 'Update an existing venue.'
-        #swagger.security = [{ "githubOAuth": [] }]
+        #swagger.security = [{ "sessionAuth": [] }]
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -150,7 +150,7 @@ router.delete(
     /*
         #swagger.tags = ['Venues']
         #swagger.description = 'Deactivate a venue (soft delete).'
-        #swagger.security = [{ "githubOAuth": [] }]
+        #swagger.security = [{ "sessionAuth": [] }]
 
         #swagger.parameters['id'] = {
             in: 'path',
