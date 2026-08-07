@@ -11,12 +11,6 @@
     "http"
   ],
   "securityDefinitions": {
-    "sessionAuth": {
-      "type": "apiKey",
-      "in": "cookie",
-      "name": "campus.connect.sid",
-      "description": "Session cookie established after local login or GitHub OAuth."
-    },
     "githubOAuth": {
       "type": "oauth2",
       "flow": "accessCode",
@@ -47,12 +41,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
@@ -82,12 +71,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/users/{id}": {
@@ -118,12 +102,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "put": {
         "tags": [
@@ -163,12 +142,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -197,12 +171,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/events/": {
@@ -294,12 +263,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/events/{id}": {
@@ -367,12 +331,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -401,12 +360,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/venues/": {
@@ -452,12 +406,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/venues/{id}": {
@@ -528,12 +477,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -565,12 +509,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/registrations/": {
@@ -615,12 +554,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
@@ -653,12 +587,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/registrations/{id}": {
@@ -689,12 +618,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "put": {
         "tags": [
@@ -734,12 +658,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -771,12 +690,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     },
     "/auth/github": {
@@ -903,12 +817,7 @@
           "200": {
             "description": "Logout completed."
           }
-        },
-        "security": [
-          {
-            "sessionAuth": []
-          }
-        ]
+        }
       }
     }
   },
