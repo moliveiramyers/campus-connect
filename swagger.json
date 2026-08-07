@@ -39,7 +39,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Get all users.",
+        "description": "Get all users. Requires an authenticated session with admin privileges.",
         "responses": {
           "200": {
             "description": "List of all users."
@@ -58,7 +58,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Register a new user.",
+        "description": "Register a new user. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "body",
@@ -95,7 +95,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Get a user by its ID.",
+        "description": "Get a user by its ID. Requires an authenticated session with admin privileges or the user themselves.",
         "parameters": [
           {
             "name": "id",
@@ -129,7 +129,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Update an existing user.",
+        "description": "Update an existing user. Requires an authenticated session with admin privileges or the user themselves.",
         "parameters": [
           {
             "name": "id",
@@ -174,7 +174,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Delete a user.",
+        "description": "Delete a user. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -273,7 +273,7 @@
         "tags": [
           "Events"
         ],
-        "description": "Create a new event.",
+        "description": "Create a new event. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "body",
@@ -336,7 +336,7 @@
         "tags": [
           "Events"
         ],
-        "description": "Update one or more fields on an event.",
+        "description": "Update one or more fields on an event. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -378,7 +378,7 @@
         "tags": [
           "Events"
         ],
-        "description": "Delete an event.",
+        "description": "Delete an event. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -578,7 +578,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Get all registrations. Supports userId, eventId, and status filters.",
+        "description": "Get all registrations. Supports userId, eventId, and status filters. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "userId",
@@ -626,7 +626,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Create a registration. Requires an authenticated GitHub session.",
+        "description": "Create a registration. Requires an authenticated session.",
         "parameters": [
           {
             "name": "body",
@@ -666,7 +666,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Get a registration by its ID.",
+        "description": "Get a registration by its ID. Requires an authenticated session with admin privileges or the owner of the registration.",
         "parameters": [
           {
             "name": "id",
@@ -700,7 +700,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Update a registration. Requires an authenticated GitHub session.",
+        "description": "Update a registration. Requires an authenticated session.",
         "parameters": [
           {
             "name": "id",
@@ -745,7 +745,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Delete a registration. Requires an authenticated GitHub session.",
+        "description": "Delete a registration. Requires an authenticated session.",
         "parameters": [
           {
             "name": "id",

@@ -21,8 +21,12 @@ const createLocalUser = async (userData) => {
 
 const authenticateLocalUser = async (userData) => {
     const { email, password } = userData;
-    const user = await User.findOne({ email })
-        .select('+authMethods.passwordHash');
+    const user = await User.findOne(
+        {
+            email,
+            isActive: true
+        }
+    ).select('+authMethods.passwordHash');
 
     if (!user) {
         throw new UnauthorizedError('Invalid email or password.');

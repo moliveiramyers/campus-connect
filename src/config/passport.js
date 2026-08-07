@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
+import { UnauthorizedError } from '../utils/error.js';
 
 import User from '../models/users.js';
 
@@ -41,11 +42,18 @@ if (githubOAuthConfigured) {
                         }
                     });
 
-                    if (!user) {
+                    if (user && !user.isActive) {
+                        throw new UnauthorizedError('Account is deactivated.');               
+                    }
+                    else if (!user) {
                         const email = profile.emails?.[0]?.value?.toLowerCase()
                             || `${profile.username || profile.id}@users.noreply.github.com`;
 
                         user = await User.findOne({ email });
+
+                        if (user && !user.isActive) {
+                            throw new UnauthorizedError('Account is deactivated.');               
+                        }
 
                         if (user) {
                             user.authMethods.push({
@@ -85,7 +93,11 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await User.findById(id);
-        done(null, user || false);
+        if (user && user.isActive) {
+            done(null, user);
+        } else {
+            done(null, false);
+        }
     } catch (error) {
         done(error);
     }

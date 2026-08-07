@@ -159,7 +159,7 @@ router.put('/:id',
 router.delete('/:id',
     /*
        #swagger.tags = ['Users']
-       #swagger.description = 'Delete a user. Requires an authenticated session with admin privileges.'
+       #swagger.description = 'Delete a user (soft delete). Requires an authenticated session with admin privileges or the user themselves.'
 
        #swagger.security = [{ "sessionAuth": [] }]
 
@@ -187,7 +187,7 @@ router.delete('/:id',
        }
    */
     requireAuth,
-    requireRole({ roles: ['admin'] }),
+    requireRole({ roles: ['admin'], allowSelf: true }),
     validateID,
     user.deleteUser);
 

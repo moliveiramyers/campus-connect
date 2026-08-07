@@ -49,13 +49,26 @@ const updateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
     try {
-        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        const deletedUser = await User.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                isActive: true
+            },
+            {
+                isActive: false
+                
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
 
         if (!deletedUser) {
             throw new NotFoundError('User not found for deletion.');
         }
 
-        res.status(200).json({ message: 'User deleted successfully.' });
+        res.status(200).json({ message: 'User deactivated successfully.' });
     } catch (error) {
         next(error);
     }
