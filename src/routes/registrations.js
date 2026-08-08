@@ -6,7 +6,9 @@ import validate from '../middleware/validate.js';
 import validateID from '../middleware/validateObjectId.js';
 import {
     createRegistrationSchema,
-    updateRegistrationSchema
+    createAdminRegistrationSchema,
+    updateRegistrationSchema,
+    updateAdminRegistrationSchema
 } from '../validators/validateRegistrations.js';
 
 const router = Router();
@@ -40,8 +42,8 @@ router.get(
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
-    authorizeRegistrationOwner,
     validateID,
+    authorizeRegistrationOwner,
     registration.getRegistrationById
 );
 
@@ -49,16 +51,21 @@ router.post(
     '/',
     /*
         #swagger.tags = ['Registrations']
-        #swagger.description = 'Create a registration. Requires an authenticated session.'
+        #swagger.description = 'Create a registration. Requires an authenticated session. Regular users may register themselves; administrators may register any user.'
         #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/Registration' } }
         #swagger.responses[201] = { description: 'Registration created successfully.' }
         #swagger.responses[400] = { description: 'Request validation failed.' }
         #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'User does not have permission to create this registration.' }
         #swagger.responses[409] = { description: 'This user is already registered for this event.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
-    validate(createRegistrationSchema),
+    validate((req) => (
+        req.user.role === 'admin'
+            ? createAdminRegistrationSchema
+            : createRegistrationSchema
+    )),
     registration.createRegistration
 );
 
@@ -66,19 +73,24 @@ router.put(
     '/:id',
     /*
         #swagger.tags = ['Registrations']
-        #swagger.description = 'Update a registration. Requires an authenticated session.'
+        #swagger.description = 'Update a registration. Requires an authenticated session with administrator privileges or ownership of the registration.'
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/RegistrationUpdate' } }
         #swagger.responses[200] = { description: 'Registration updated successfully.' }
         #swagger.responses[400] = { description: 'Invalid ID or request body.' }
         #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'User does not have permission to update this registration.' }
         #swagger.responses[404] = { description: 'Registration not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
-    authorizeRegistrationOwner,
     validateID,
-    validate(updateRegistrationSchema),
+    authorizeRegistrationOwner,
+    validate((req) => (
+        req.user.role === 'admin'
+            ? updateAdminRegistrationSchema
+            : updateRegistrationSchema
+    )),
     registration.updateRegistration
 );
 
@@ -86,17 +98,18 @@ router.delete(
     '/:id',
     /*
         #swagger.tags = ['Registrations']
-        #swagger.description = 'Delete a registration. Requires an authenticated session.'
+        #swagger.description = 'Delete a registration. Requires an authenticated session with administrator privileges or ownership of the registration.'
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Registration deleted successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }
         #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'User does not have permission to delete this registration.' }
         #swagger.responses[404] = { description: 'Registration not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
-    authorizeRegistrationOwner,
     validateID,
+    authorizeRegistrationOwner,
     registration.deleteRegistration
 );
 

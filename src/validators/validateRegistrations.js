@@ -13,6 +13,12 @@ const registrationStatus = Joi.string()
     .valid('registered', 'waitlisted', 'cancelled', 'attended');
 
 const createRegistrationSchema = Joi.object({
+    eventId: objectId.required(),
+    status: registrationStatus.default('registered'),
+    notes: Joi.string().trim().max(500).allow('')
+}).unknown(false);
+
+const createAdminRegistrationSchema = Joi.object({
     userId: objectId.required(),
     eventId: objectId.required(),
     status: registrationStatus.default('registered'),
@@ -20,6 +26,14 @@ const createRegistrationSchema = Joi.object({
 }).unknown(false);
 
 const updateRegistrationSchema = Joi.object({
+    eventId: objectId,
+    status: registrationStatus,
+    notes: Joi.string().trim().max(500).allow('')
+})
+    .min(1)
+    .unknown(false);
+
+const updateAdminRegistrationSchema = Joi.object({
     userId: objectId,
     eventId: objectId,
     status: registrationStatus,
@@ -30,5 +44,7 @@ const updateRegistrationSchema = Joi.object({
 
 export {
     createRegistrationSchema,
-    updateRegistrationSchema
+    createAdminRegistrationSchema,
+    updateRegistrationSchema,
+    updateAdminRegistrationSchema
 };
