@@ -10,13 +10,11 @@ documentation, and session-based authentication.
 | Collection | Base route | Operations | Validation | Protection |
 | --- | --- | --- | --- | --- |
 | Users | `/users` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated access; admins can manage all users, and users can access their own records |
-| Events | `/events` | GET all, GET one, POST, PUT, DELETE | Joi | No special protection in the current build |
-| Venues | `/venues` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated admin writes |
+| Events | `/events` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated admin writes; public reads |
+| Venues | `/venues` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated admin writes; public reads |
 | Registrations | `/registrations` | GET all, GET one, POST, PUT, DELETE | Joi | Session-authenticated access; owners can manage their own registrations, admins can manage all |
 
-Authenticated sessions are required for protected operations. GitHub OAuth is
-available as an authentication option, but the protected routes are session-based
-rather than GitHub-only. Invalid bodies and IDs return `400`; missing records
+Protected operations require a valid authenticated session. Authentication can be established either by registering and logging in locally via /auth/register and /auth/login, or by signing in with GitHub OAuth at /auth/github. Once authenticated, protected routes use the session cookie rather than requiring GitHub credentials directly. Invalid bodies and IDs return `400`; missing records
 return `404`; duplicate records return `409`; unexpected errors return a safe
 `500` response.
 
