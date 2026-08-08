@@ -1,19 +1,11 @@
 import { Router } from 'express';
-
-import passport, { githubOAuthConfigured } from '../config/passport.js';
-import { ServiceUnavailableError } from '../utils/error.js';
+import requireGitHubConfiguration from '../middleware/githubConfig.js';
+import * as authController from '../controllers/auth.js';
+import validate from '../middleware/validate.js';
+import { publicCreateUserSchema, authLoginSchema } from '../validators/validateUsers.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = Router();
-
-const requireGitHubConfiguration = (req, res, next) => {
-    if (!githubOAuthConfigured) {
-        return next(new ServiceUnavailableError(
-            'GitHub OAuth is not configured on this server.'
-        ));
-    }
-
-    next();
-};
 
 router.get(
     '/github',
@@ -25,7 +17,7 @@ router.get(
         #swagger.responses[503] = { description: 'OAuth environment variables are not configured.' }
     */
     requireGitHubConfiguration,
-    passport.authenticate('github', { scope: ['user:email'] })
+    authController.gitHubOauth
 );
 
 router.get(
@@ -38,52 +30,67 @@ router.get(
         #swagger.responses[401] = { description: 'GitHub authentication failed.' }
     */
     requireGitHubConfiguration,
-    passport.authenticate('github', { failureRedirect: '/auth/failure' }),
-    (req, res) => {
-        res.redirect(process.env.OAUTH_SUCCESS_REDIRECT || '/api-docs');
-    }
+    authController.gitHubCallback
 );
 
-router.get('/status', (req, res) => {
+router.get('/status',
     /*
         #swagger.tags = ['Authentication']
         #swagger.description = 'Return the current OAuth session status.'
         #swagger.responses[200] = { description: 'Current authentication status.' }
     */
-    res.status(200).json({
-        authenticated: req.isAuthenticated?.() || false,
-        user: req.user || null
-    });
-});
+    authController.getAuthStatus
+);
 
-router.get('/failure', (req, res) => {
-    /* #swagger.ignore = true */
-    res.status(401).json({
-        status: 'fail',
-        message: 'GitHub authentication failed.'
-    });
-});
+router.post(
+    '/register',
+    /*
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Register a new user with email, password, name, and optional profile image.'
+      #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+              $ref: '#/definitions/NewUser'
+          }
+      }
+      #swagger.responses[201] = { description: 'User registered successfully.' }
+      #swagger.responses[400] = { description: 'Request validation failed.' }
+      #swagger.responses[409] = { description: 'A user with this email already exists.' }
+    */
+    validate(publicCreateUserSchema),
+    authController.registerLocalUser
+);
 
-router.get('/logout', (req, res, next) => {
+router.post(
+    '/login',
+    /*
+      #swagger.tags = ['Authentication']
+      #swagger.description = 'Log in with local credentials and establish a session.'
+      #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+                $ref: '#/definitions/LoginRequest'
+              }
+          }
+      }
+      #swagger.responses[200] = { description: 'Login successful.' }
+      #swagger.responses[401] = { description: 'Invalid email or password.' }
+      #swagger.responses[400] = { description: 'Request validation failed.' }
+    */
+    validate(authLoginSchema),
+    authController.loginLocalUser
+);
+
+router.get('/logout',
     /*
         #swagger.tags = ['Authentication']
-        #swagger.description = 'End the current OAuth session.'
+        #swagger.description = 'End the current authenticated session (local login or GitHub OAuth).'
         #swagger.responses[200] = { description: 'Logout completed.' }
     */
-    req.logout((error) => {
-        if (error) {
-            return next(error);
-        }
-
-        req.session.destroy((sessionError) => {
-            if (sessionError) {
-                return next(sessionError);
-            }
-
-            res.clearCookie('campus.connect.sid');
-            res.status(200).json({ message: 'Logged out successfully.' });
-        });
-    });
-});
+    requireAuth,
+    authController.logoutUser
+);
 
 export default router;

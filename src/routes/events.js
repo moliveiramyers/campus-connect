@@ -7,6 +7,7 @@ import {
     createEventSchema,
     updateEventSchema
 } from '../validators/validateEvents.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -47,7 +48,7 @@ router.post(
     '/',
     /*
         #swagger.tags = ['Events']
-        #swagger.description = 'Create a new event.'
+        #swagger.description = 'Create a new event. Requires an authenticated session with admin privileges.'
         #swagger.parameters['body'] = {
             in: 'body',
             required: true,
@@ -57,6 +58,8 @@ router.post(
         #swagger.responses[400] = { description: 'Request validation failed.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     validate(createEventSchema),
     event.createEvent
 );
@@ -65,7 +68,7 @@ router.put(
     '/:id',
     /*
         #swagger.tags = ['Events']
-        #swagger.description = 'Update one or more fields on an event.'
+        #swagger.description = 'Update one or more fields on an event. Requires an authenticated session with admin privileges.'
         #swagger.parameters['id'] = { in: 'path', description: 'Event ID', required: true, type: 'string' }
         #swagger.parameters['body'] = {
             in: 'body',
@@ -77,6 +80,8 @@ router.put(
         #swagger.responses[404] = { description: 'Event not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     validateID,
     validate(updateEventSchema),
     event.updateEvent
@@ -86,13 +91,15 @@ router.delete(
     '/:id',
     /*
         #swagger.tags = ['Events']
-        #swagger.description = 'Delete an event.'
+        #swagger.description = 'Delete an event. Requires an authenticated session with admin privileges.'
         #swagger.parameters['id'] = { in: 'path', description: 'Event ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Event deleted successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }
         #swagger.responses[404] = { description: 'Event not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
     validateID,
     event.deleteEvent
 );

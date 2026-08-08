@@ -65,6 +65,11 @@ const userSchema = new mongoose.Schema(
             maxlength: 2048
         },
 
+        isActive: {
+            type: Boolean,
+            default: true
+        },
+
         authMethods: {
             type: [authMethodSchema],
             required: true

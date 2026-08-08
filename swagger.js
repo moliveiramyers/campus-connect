@@ -14,7 +14,7 @@ const doc = {
     info: {
         title: 'Campus Connect API',
         description:
-            'Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/github before using protected routes.',
+            'Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/login or /auth/github before using protected routes.',
         version: '2.0.0'
     },
     host: serverHost,
@@ -43,6 +43,16 @@ const doc = {
             password: 'SecurePass123!',
             role: 'user',
             profileImage: 'https://example.com/profile-image.jpg'
+        },
+        NewUser: {
+            name: 'Jane Doe',
+            email: 'jane.doe@example.com',
+            password: 'SecurePass123!',
+            profileImage: 'https://example.com/profile-image.jpg'
+        },
+        LoginRequest: {
+            email: 'jane.doe@example.com',
+            password: 'SecurePass123!'
         },
         UserUpdate: {
             name: 'Jane Smith',
@@ -87,12 +97,22 @@ const doc = {
                 'Recently renovated and wheelchair accessible.'
         },
         Registration: {
+            eventId: '66b4b7d9a2f1c3e4d5a6b7c9',
+            status: 'registered',
+            notes: 'Requires wheelchair seating.'
+        },
+        AdminRegistration: {
             userId: '66b4b7d9a2f1c3e4d5a6b7c8',
             eventId: '66b4b7d9a2f1c3e4d5a6b7c9',
             status: 'registered',
             notes: 'Requires wheelchair seating.'
         },
         RegistrationUpdate: {
+            status: 'attended',
+            notes: 'Checked in at the main entrance.'
+        },
+        AdminRegistrationUpdate: {
+            userId: '66b4b7d9a2f1c3e4d5a6b7c8',
             status: 'attended',
             notes: 'Checked in at the main entrance.'
         }

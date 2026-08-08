@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Campus Connect API",
-    "description": "Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/github before using protected routes.",
+    "description": "Campus Connect API for managing users, events, venues, and registrations. Sign in at /auth/login or /auth/github before using protected routes.",
     "version": "2.0.0"
   },
   "host": "localhost:8080",
@@ -33,7 +33,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Get all users.",
+        "description": "Get all users. Requires an authenticated session with admin privileges.",
         "responses": {
           "200": {
             "description": "List of all users."
@@ -47,7 +47,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Register a new user.",
+        "description": "Register a new user. Requires an authenticated session with admin privileges. Administrators may assign the new user\\'s role during creation.",
         "parameters": [
           {
             "name": "body",
@@ -79,7 +79,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Get a user by its ID.",
+        "description": "Get a user by its ID. Requires an authenticated session with admin privileges or the user themselves.",
         "parameters": [
           {
             "name": "id",
@@ -108,7 +108,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Update an existing user.",
+        "description": "Update an existing user. Requires an authenticated session with admin privileges or the user themselves. Administrators may update any user fields including role; regular users may update only their own profile fields.",
         "parameters": [
           {
             "name": "id",
@@ -148,7 +148,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Delete a user.",
+        "description": "Delete a user (soft delete). Requires an authenticated session with admin privileges or the user themselves.",
         "parameters": [
           {
             "name": "id",
@@ -242,7 +242,7 @@
         "tags": [
           "Events"
         ],
-        "description": "Create a new event.",
+        "description": "Create a new event. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "body",
@@ -300,7 +300,7 @@
         "tags": [
           "Events"
         ],
-        "description": "Update one or more fields on an event.",
+        "description": "Update one or more fields on an event. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -337,7 +337,7 @@
         "tags": [
           "Events"
         ],
-        "description": "Delete an event.",
+        "description": "Delete an event. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -382,7 +382,7 @@
         "tags": [
           "Venues"
         ],
-        "description": "Create a new venue.",
+        "description": "Create a new venue. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "body",
@@ -406,12 +406,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "githubOAuth": []
-          }
-        ]
+        }
       }
     },
     "/venues/{id}": {
@@ -448,7 +443,7 @@
         "tags": [
           "Venues"
         ],
-        "description": "Update an existing venue.",
+        "description": "Update an existing venue. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -482,18 +477,13 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "githubOAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
           "Venues"
         ],
-        "description": "Deactivate a venue (soft delete).",
+        "description": "Deactivate a venue (soft delete). Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -519,12 +509,7 @@
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "githubOAuth": []
-          }
-        ]
+        }
       }
     },
     "/registrations/": {
@@ -532,7 +517,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Get all registrations. Supports userId, eventId, and status filters.",
+        "description": "Get all registrations. Supports userId, eventId, and status filters. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "userId",
@@ -575,7 +560,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Create a registration. Requires an authenticated GitHub session.",
+        "description": "Create a registration. Requires an authenticated session. Regular users may register themselves; administrators may create a registration for any user by providing userId.",
         "parameters": [
           {
             "name": "body",
@@ -596,18 +581,16 @@
           "401": {
             "description": "Authentication required."
           },
+          "403": {
+            "description": "User does not have permission to create this registration."
+          },
           "409": {
             "description": "This user is already registered for this event."
           },
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "githubOAuth": []
-          }
-        ]
+        }
       }
     },
     "/registrations/{id}": {
@@ -615,7 +598,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Get a registration by its ID.",
+        "description": "Get a registration by its ID. Requires an authenticated session with admin privileges or the owner of the registration.",
         "parameters": [
           {
             "name": "id",
@@ -644,7 +627,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Update a registration. Requires an authenticated GitHub session.",
+        "description": "Update a registration. Requires an authenticated session. Administrators may update any registration, including userId; registration owners may update only their own registration details.",
         "parameters": [
           {
             "name": "id",
@@ -672,24 +655,22 @@
           "401": {
             "description": "Authentication required."
           },
+          "403": {
+            "description": "User does not have permission to update this registration."
+          },
           "404": {
             "description": "Registration not found."
           },
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "githubOAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
           "Registrations"
         ],
-        "description": "Delete a registration. Requires an authenticated GitHub session.",
+        "description": "Delete a registration. Requires an authenticated session; administrators or the registration owner may perform this action.",
         "parameters": [
           {
             "name": "id",
@@ -709,18 +690,16 @@
           "401": {
             "description": "Authentication required."
           },
+          "403": {
+            "description": "User does not have permission to delete this registration."
+          },
           "404": {
             "description": "Registration not found."
           },
           "500": {
             "description": "Unexpected server error."
           }
-        },
-        "security": [
-          {
-            "githubOAuth": []
-          }
-        ]
+        }
       }
     },
     "/auth/github": {
@@ -779,12 +758,70 @@
         }
       }
     },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Register a new user with email, password, name, and optional profile image.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "409": {
+            "description": "A user with this email already exists."
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Log in with local credentials and establish a session.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful."
+          },
+          "400": {
+            "description": "Request validation failed."
+          },
+          "401": {
+            "description": "Invalid email or password."
+          }
+        }
+      }
+    },
     "/auth/logout": {
       "get": {
         "tags": [
           "Authentication"
         ],
-        "description": "End the current OAuth session.",
+        "description": "End the current authenticated session (local login or GitHub OAuth).",
         "responses": {
           "200": {
             "description": "Logout completed."
@@ -829,6 +866,40 @@
         "profileImage": {
           "type": "string",
           "example": "https://example.com/profile-image.jpg"
+        }
+      }
+    },
+    "NewUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Jane Doe"
+        },
+        "email": {
+          "type": "string",
+          "example": "jane.doe@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SecurePass123!"
+        },
+        "profileImage": {
+          "type": "string",
+          "example": "https://example.com/profile-image.jpg"
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "jane.doe@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SecurePass123!"
         }
       }
     },
@@ -977,6 +1048,23 @@
     "Registration": {
       "type": "object",
       "properties": {
+        "eventId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c9"
+        },
+        "status": {
+          "type": "string",
+          "example": "registered"
+        },
+        "notes": {
+          "type": "string",
+          "example": "Requires wheelchair seating."
+        }
+      }
+    },
+    "AdminRegistration": {
+      "type": "object",
+      "properties": {
         "userId": {
           "type": "string",
           "example": "66b4b7d9a2f1c3e4d5a6b7c8"
@@ -998,6 +1086,23 @@
     "RegistrationUpdate": {
       "type": "object",
       "properties": {
+        "status": {
+          "type": "string",
+          "example": "attended"
+        },
+        "notes": {
+          "type": "string",
+          "example": "Checked in at the main entrance."
+        }
+      }
+    },
+    "AdminRegistrationUpdate": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c8"
+        },
         "status": {
           "type": "string",
           "example": "attended"

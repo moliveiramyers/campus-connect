@@ -3,17 +3,19 @@ import express from 'express';
 import * as user from '../controllers/users.js';
 import validate from '../middleware/validate.js';
 import {
-    createUserSchema,
-    updateUserSchema
+    adminCreateUserSchema,
+    adminUpdateUserSchema,
+    publicUpdateUserSchema
 } from '../validators/validateUsers.js';
 import validateID from '../middleware/validateObjectId.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
 router.get('/',
     /*
         #swagger.tags = ['Users']
-        #swagger.description = 'Get all users.'
+        #swagger.description = 'Get all users. Requires an authenticated session with admin privileges.'
 
         #swagger.responses[200] = {
             description: 'List of all users.'
@@ -23,41 +25,49 @@ router.get('/',
             description: 'Unexpected server error.'
         }
     */
-    user.getAllUsers);
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
+    user.getAllUsers
+);
+    
 router.get('/:id',
     /*
-       #swagger.tags = ['Users']
-       #swagger.description = 'Get a user by its ID.'
+        #swagger.tags = ['Users']
+        #swagger.description = 'Get a user by its ID. Requires an authenticated session with admin privileges or the user themselves.'
 
-       #swagger.parameters['id'] = {
-           in: 'path',
-           description: 'User ID',
-           required: true,
-           type: 'string'
-       }
+        #swagger.parameters['id'] = {
+            in: 'path',
+            description: 'User ID',
+            required: true,
+            type: 'string'
+        }
 
-       #swagger.responses[200] = {
-           description: 'User found successfully.'
-       }
+        #swagger.responses[200] = {
+            description: 'User found successfully.'
+        }
 
-       #swagger.responses[404] = {
-           description: 'User not found.'
-       }
+        #swagger.responses[404] = {
+            description: 'User not found.'
+        }
 
-       #swagger.responses[400] = {
-           description: 'Invalid MongoDB ObjectId.'
-       }
+        #swagger.responses[400] = {
+            description: 'Invalid MongoDB ObjectId.'
+        }
 
-       #swagger.responses[500] = {
-           description: 'Unexpected server error.'
-       }
+        #swagger.responses[500] = {
+            description: 'Unexpected server error.'
+        }
    */
-    validateID, user.getUserById);
+    requireAuth,
+    requireRole({ roles: ['admin'], allowSelf: true }),
+    validateID,
+    user.getUserById
+);
     
 router.post('/',
     /*
       #swagger.tags = ['Users']
-      #swagger.description = 'Register a new user.'
+      #swagger.description = 'Register a new user. Requires an authenticated session with admin privileges. Administrators may assign the new user\'s role during creation.'
 
       #swagger.parameters['body'] = {
           in: 'body',
@@ -83,12 +93,15 @@ router.post('/',
           description: 'Unexpected server error.'
       }
   */
-    validate(createUserSchema), user.createUser);
+    requireAuth,
+    requireRole({ roles: ['admin'] }),
+    validate(adminCreateUserSchema),
+    user.createUser);
 
 router.put('/:id',
     /*
        #swagger.tags = ['Users']
-       #swagger.description = 'Update an existing user.'
+       #swagger.description = 'Update an existing user. Requires an authenticated session with admin privileges or the user themselves. Administrators may update any user fields including role; regular users may update only their own profile fields.'
 
        #swagger.parameters['id'] = {
            in: 'path',
@@ -125,12 +138,20 @@ router.put('/:id',
            description: 'Unexpected server error.'
        }
    */
-    validateID, validate(updateUserSchema), user.updateUser);
+    requireAuth,
+    requireRole({ roles: ['admin'], allowSelf: true }),
+    validateID,
+    validate(req => req.user.role === 'admin'
+        ? adminUpdateUserSchema
+        : publicUpdateUserSchema
+    ),
+    user.updateUser
+);
 
 router.delete('/:id',
     /*
        #swagger.tags = ['Users']
-       #swagger.description = 'Delete a user.'
+       #swagger.description = 'Delete a user (soft delete). Requires an authenticated session with admin privileges or the user themselves.'
 
        #swagger.parameters['id'] = {
            in: 'path',
@@ -155,6 +176,9 @@ router.delete('/:id',
            description: 'Unexpected server error.'
        }
    */
-    validateID, user.deleteUser);
+    requireAuth,
+    requireRole({ roles: ['admin'], allowSelf: true }),
+    validateID,
+    user.deleteUser);
 
 export default router;

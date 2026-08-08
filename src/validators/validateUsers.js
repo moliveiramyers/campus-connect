@@ -29,23 +29,39 @@ const sharedFields = {
         .allow('')
 };
 
-const createUserSchema = Joi.object({
-    ...sharedFields,
+const publicCreateUserSchema = Joi.object({
     name: sharedFields.name.required(),
     email: sharedFields.email.required(),
     password: sharedFields.password.required(),
-    role: sharedFields.role.default('user')
+    profileImage: sharedFields.profileImage
 }).unknown(false);
 
-const updateUserSchema = Joi.object({
-    ...sharedFields
+const adminCreateUserSchema = publicCreateUserSchema.keys({
+    role: sharedFields.role.required()
+});
+
+const publicUpdateUserSchema = Joi.object({
+    name: sharedFields.name,
+    email: sharedFields.email,
+    password: sharedFields.password,
+    profileImage: sharedFields.profileImage
 })
     .min(1)
     .unknown(false);
 
-export {
-    createUserSchema,
-    updateUserSchema
-};
+const adminUpdateUserSchema = publicUpdateUserSchema.keys({
+    role: sharedFields.role
+});
 
-export default createUserSchema;
+const authLoginSchema = Joi.object({
+    email: sharedFields.email.required(),
+    password: sharedFields.password.required()
+}).unknown(false);
+
+export {
+    publicCreateUserSchema,
+    adminCreateUserSchema,
+    publicUpdateUserSchema,
+    adminUpdateUserSchema,
+    authLoginSchema
+};

@@ -1,18 +1,12 @@
 import { Router } from "express";
-import requireAuth from "../middleware/auth.js";
+import { requireAuth, requireRole } from "../middleware/auth.js";
 import validate from "../middleware/validate.js";
 import validateID from "../middleware/validateObjectId.js";
 import {
     createVenueSchema,
     updateVenueSchema,
 } from "../validators/validateVenue.js";
-import {
-    getAllVenues,
-    getVenueById,
-    createVenue,
-    updateVenue,
-    deleteVenue,
-} from "../controllers/venues.js";
+import * as venue from "../controllers/venues.js";
 
 const router = Router();
 
@@ -29,7 +23,7 @@ router.get(
             description: 'Unexpected server error.'
         }
     */
-    getAllVenues
+    venue.getAllVenues
 );
 
 router.get(
@@ -62,15 +56,14 @@ router.get(
         }
     */
     validateID,
-    getVenueById
+    venue.getVenueById
 );
 
 router.post(
     "/",
     /*
         #swagger.tags = ['Venues']
-        #swagger.description = 'Create a new venue.'
-        #swagger.security = [{ "githubOAuth": [] }]
+        #swagger.description = 'Create a new venue. Requires an authenticated session with admin privileges.'
 
         #swagger.parameters['body'] = {
             in: 'body',
@@ -97,16 +90,16 @@ router.post(
         }
     */
     requireAuth,
+    requireRole({ roles: ["admin"] }),
     validate(createVenueSchema),
-    createVenue
+    venue.createVenue
 );
 
 router.put(
     "/:id",
     /*
         #swagger.tags = ['Venues']
-        #swagger.description = 'Update an existing venue.'
-        #swagger.security = [{ "githubOAuth": [] }]
+        #swagger.description = 'Update an existing venue. Requires an authenticated session with admin privileges.'
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -144,17 +137,17 @@ router.put(
         }
     */
     requireAuth,
+    requireRole({ roles: ["admin"] }),
     validateID,
     validate(updateVenueSchema),
-    updateVenue
+    venue.updateVenue
 );
 
 router.delete(
     "/:id",
     /*
         #swagger.tags = ['Venues']
-        #swagger.description = 'Deactivate a venue (soft delete).'
-        #swagger.security = [{ "githubOAuth": [] }]
+        #swagger.description = 'Deactivate a venue (soft delete). Requires an authenticated session with admin privileges.'
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -184,8 +177,9 @@ router.delete(
         }
     */
     requireAuth,
+    requireRole({ roles: ["admin"] }),
     validateID,
-    deleteVenue
+    venue.deleteVenue
 );
 
 export default router;

@@ -52,7 +52,15 @@ const getRegistrationById = async (req, res, next) => {
 
 const createRegistration = async (req, res, next) => {
     try {
-        const registration = await Registration.create(req.body);
+        const registrationData = {
+            ...req.body,
+            ...(req.user.role === 'admin'
+                ? {}
+                : { userId: req.user.id })
+        };
+
+        const registration = await Registration.create(registrationData);
+
         res.status(201).json(registration);
     } catch (error) {
         next(error);
@@ -85,7 +93,9 @@ const deleteRegistration = async (req, res, next) => {
             throw new NotFoundError('Registration not found for deletion.');
         }
 
-        res.status(200).json({ message: 'Registration deleted successfully.' });
+        res.status(200).json({
+            message: 'Registration deleted successfully.'
+        });
     } catch (error) {
         next(error);
     }
