@@ -51,7 +51,7 @@ router.post(
     '/',
     /*
         #swagger.tags = ['Registrations']
-        #swagger.description = 'Create a registration. Requires an authenticated session. Regular users may register themselves; administrators may register any user.'
+        #swagger.description = 'Create a registration. Requires an authenticated session. Regular users may register themselves; administrators may create a registration for any user by providing userId.'
         #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/Registration' } }
         #swagger.responses[201] = { description: 'Registration created successfully.' }
         #swagger.responses[400] = { description: 'Request validation failed.' }
@@ -73,7 +73,7 @@ router.put(
     '/:id',
     /*
         #swagger.tags = ['Registrations']
-        #swagger.description = 'Update a registration. Requires an authenticated session with administrator privileges or ownership of the registration.'
+        #swagger.description = 'Update a registration. Requires an authenticated session. Administrators may update any registration, including userId; registration owners may update only their own registration details.'
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/RegistrationUpdate' } }
         #swagger.responses[200] = { description: 'Registration updated successfully.' }
@@ -98,7 +98,7 @@ router.delete(
     '/:id',
     /*
         #swagger.tags = ['Registrations']
-        #swagger.description = 'Delete a registration. Requires an authenticated session with administrator privileges or ownership of the registration.'
+        #swagger.description = 'Delete a registration. Requires an authenticated session; administrators or the registration owner may perform this action.'
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Registration deleted successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }

@@ -86,7 +86,7 @@ router.post(
 router.get('/logout',
     /*
         #swagger.tags = ['Authentication']
-        #swagger.description = 'End the current OAuth session.'
+        #swagger.description = 'End the current authenticated session (local login or GitHub OAuth).'
         #swagger.responses[200] = { description: 'Logout completed.' }
     */
     requireAuth,

@@ -67,7 +67,7 @@ router.get('/:id',
 router.post('/',
     /*
       #swagger.tags = ['Users']
-      #swagger.description = 'Register a new user. Requires an authenticated session with admin privileges.'
+      #swagger.description = 'Register a new user. Requires an authenticated session with admin privileges. Administrators may assign the new user\'s role during creation.'
 
       #swagger.parameters['body'] = {
           in: 'body',
@@ -101,7 +101,7 @@ router.post('/',
 router.put('/:id',
     /*
        #swagger.tags = ['Users']
-       #swagger.description = 'Update an existing user. Requires an authenticated session with admin privileges or the user themselves.'
+       #swagger.description = 'Update an existing user. Requires an authenticated session with admin privileges or the user themselves. Administrators may update any user fields including role; regular users may update only their own profile fields.'
 
        #swagger.parameters['id'] = {
            in: 'path',

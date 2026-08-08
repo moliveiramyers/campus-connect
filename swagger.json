@@ -47,7 +47,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Register a new user. Requires an authenticated session with admin privileges.",
+        "description": "Register a new user. Requires an authenticated session with admin privileges. Administrators may assign the new user\\'s role during creation.",
         "parameters": [
           {
             "name": "body",
@@ -108,7 +108,7 @@
         "tags": [
           "Users"
         ],
-        "description": "Update an existing user. Requires an authenticated session with admin privileges or the user themselves.",
+        "description": "Update an existing user. Requires an authenticated session with admin privileges or the user themselves. Administrators may update any user fields including role; regular users may update only their own profile fields.",
         "parameters": [
           {
             "name": "id",
@@ -382,7 +382,7 @@
         "tags": [
           "Venues"
         ],
-        "description": "Create a new venue.",
+        "description": "Create a new venue. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "body",
@@ -443,7 +443,7 @@
         "tags": [
           "Venues"
         ],
-        "description": "Update an existing venue.",
+        "description": "Update an existing venue. Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -483,7 +483,7 @@
         "tags": [
           "Venues"
         ],
-        "description": "Deactivate a venue (soft delete).",
+        "description": "Deactivate a venue (soft delete). Requires an authenticated session with admin privileges.",
         "parameters": [
           {
             "name": "id",
@@ -560,7 +560,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Create a registration. Requires an authenticated session.",
+        "description": "Create a registration. Requires an authenticated session. Regular users may register themselves; administrators may create a registration for any user by providing userId.",
         "parameters": [
           {
             "name": "body",
@@ -580,6 +580,9 @@
           },
           "401": {
             "description": "Authentication required."
+          },
+          "403": {
+            "description": "User does not have permission to create this registration."
           },
           "409": {
             "description": "This user is already registered for this event."
@@ -624,7 +627,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Update a registration. Requires an authenticated session.",
+        "description": "Update a registration. Requires an authenticated session. Administrators may update any registration, including userId; registration owners may update only their own registration details.",
         "parameters": [
           {
             "name": "id",
@@ -652,6 +655,9 @@
           "401": {
             "description": "Authentication required."
           },
+          "403": {
+            "description": "User does not have permission to update this registration."
+          },
           "404": {
             "description": "Registration not found."
           },
@@ -664,7 +670,7 @@
         "tags": [
           "Registrations"
         ],
-        "description": "Delete a registration. Requires an authenticated session.",
+        "description": "Delete a registration. Requires an authenticated session; administrators or the registration owner may perform this action.",
         "parameters": [
           {
             "name": "id",
@@ -683,6 +689,9 @@
           },
           "401": {
             "description": "Authentication required."
+          },
+          "403": {
+            "description": "User does not have permission to delete this registration."
           },
           "404": {
             "description": "Registration not found."
@@ -812,7 +821,7 @@
         "tags": [
           "Authentication"
         ],
-        "description": "End the current OAuth session.",
+        "description": "End the current authenticated session (local login or GitHub OAuth).",
         "responses": {
           "200": {
             "description": "Logout completed."
@@ -1039,6 +1048,23 @@
     "Registration": {
       "type": "object",
       "properties": {
+        "eventId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c9"
+        },
+        "status": {
+          "type": "string",
+          "example": "registered"
+        },
+        "notes": {
+          "type": "string",
+          "example": "Requires wheelchair seating."
+        }
+      }
+    },
+    "AdminRegistration": {
+      "type": "object",
+      "properties": {
         "userId": {
           "type": "string",
           "example": "66b4b7d9a2f1c3e4d5a6b7c8"
@@ -1060,6 +1086,23 @@
     "RegistrationUpdate": {
       "type": "object",
       "properties": {
+        "status": {
+          "type": "string",
+          "example": "attended"
+        },
+        "notes": {
+          "type": "string",
+          "example": "Checked in at the main entrance."
+        }
+      }
+    },
+    "AdminRegistrationUpdate": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "example": "66b4b7d9a2f1c3e4d5a6b7c8"
+        },
         "status": {
           "type": "string",
           "example": "attended"

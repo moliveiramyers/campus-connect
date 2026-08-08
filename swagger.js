@@ -97,12 +97,22 @@ const doc = {
                 'Recently renovated and wheelchair accessible.'
         },
         Registration: {
+            eventId: '66b4b7d9a2f1c3e4d5a6b7c9',
+            status: 'registered',
+            notes: 'Requires wheelchair seating.'
+        },
+        AdminRegistration: {
             userId: '66b4b7d9a2f1c3e4d5a6b7c8',
             eventId: '66b4b7d9a2f1c3e4d5a6b7c9',
             status: 'registered',
             notes: 'Requires wheelchair seating.'
         },
         RegistrationUpdate: {
+            status: 'attended',
+            notes: 'Checked in at the main entrance.'
+        },
+        AdminRegistrationUpdate: {
+            userId: '66b4b7d9a2f1c3e4d5a6b7c8',
             status: 'attended',
             notes: 'Checked in at the main entrance.'
         }

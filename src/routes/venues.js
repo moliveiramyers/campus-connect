@@ -63,7 +63,7 @@ router.post(
     "/",
     /*
         #swagger.tags = ['Venues']
-        #swagger.description = 'Create a new venue.'
+        #swagger.description = 'Create a new venue. Requires an authenticated session with admin privileges.'
 
         #swagger.parameters['body'] = {
             in: 'body',
@@ -99,7 +99,7 @@ router.put(
     "/:id",
     /*
         #swagger.tags = ['Venues']
-        #swagger.description = 'Update an existing venue.'
+        #swagger.description = 'Update an existing venue. Requires an authenticated session with admin privileges.'
 
         #swagger.parameters['id'] = {
             in: 'path',
@@ -147,7 +147,7 @@ router.delete(
     "/:id",
     /*
         #swagger.tags = ['Venues']
-        #swagger.description = 'Deactivate a venue (soft delete).'
+        #swagger.description = 'Deactivate a venue (soft delete). Requires an authenticated session with admin privileges.'
 
         #swagger.parameters['id'] = {
             in: 'path',
