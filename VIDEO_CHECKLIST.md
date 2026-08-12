@@ -1,31 +1,37 @@
-# Week 06 Video Checklist (target: 6–7 minutes)
+# Week 06 Video Checklist (target: 6-7 minutes)
 
-Keep the recording between 5:00 and 8:00. Use the published Render site—not
-localhost—and keep `.env`, Render secret values, and database credentials off
+Keep the recording between 5:00 and 8:00. Use the published Render site--not
+localhost--and keep `.env`, Render secret values, and database credentials off
 screen.
 
-## 0:00–0:40 — Deployment and security
+Before recording, ensure the GitHub-linked demonstration account has the
+`admin` role in MongoDB. A new GitHub OAuth account receives the default `user`
+role and will receive `403` on Users, Events, and Venues admin operations.
+
+## 0:00-0:40 -- Deployment and security
 
 - Show `https://campus-connect-ckpe.onrender.com` returning the health JSON.
-- Open the public `/api-docs` route.
+- Open the public `/api-docs/` route.
 - Briefly show the public GitHub repository and `.env.example`/`.gitignore` to
   establish that real credentials are not committed. Do not open Render's
   secret-value screen.
 
-## 0:40–1:20 — Four collections and Swagger
+## 0:40-1:20 -- Four collections and Swagger
 
 - In Swagger UI, point out Users, Events, Venues, and Registrations.
 - Point out GET, POST, PUT, and DELETE for all four collections.
 - Open `/swagger.json` briefly to show that the executable document is present.
 
-## 1:20–2:00 — OAuth and protected routes
+## 1:20-2:00 -- OAuth and protected routes
 
 - While logged out, execute Venue POST or Registration POST and show `401`.
-- Open `/auth/github`, complete GitHub login, and return to `/api-docs`.
+- Open `/auth/github`, complete GitHub login, and return to `/api-docs/`.
 - Execute `/auth/status` and show `authenticated: true`.
-- Explain that Venue and Registration POST/PUT/DELETE require the session.
+- Explain that every collection write requires a session. Users, Events, and
+  Venues require admin privileges for their write operations; Registrations
+  allow owners or admins as documented.
 
-## 2:00–4:40 — CRUD and database changes
+## 2:00-4:40 -- CRUD and database changes
 
 - Use prepared request bodies and IDs so this section stays fast.
 - For each collection, demonstrate GET, POST, PUT, and DELETE with the proper
@@ -45,7 +51,7 @@ Expected success codes:
 - PUT: `200`
 - DELETE: `200`
 
-## 4:40–5:35 — Data validation and errors
+## 4:40-5:35 -- Data validation and errors
 
 - Show invalid POST and PUT examples for both Week 06 collections (Venues and
   Registrations), each returning `400` after login.
@@ -54,9 +60,9 @@ Expected success codes:
   PUT body.
 - Briefly mention the documented `404`, `409`, and safe `500` responses.
 
-## 5:35–6:20 — Automated tests
+## 5:35-6:20 -- Automated tests
 
-- Run `npm test` and show all tests passing.
+- Run `npm test` and show all 61 tests passing.
 - Highlight the eight separately named tests:
   - GET all Users and GET one User
   - GET all Events and GET one Event
@@ -64,7 +70,7 @@ Expected success codes:
   - GET all Registrations and GET one Registration
 - Point out the OAuth `401` and validation tests.
 
-## 6:20–6:50 — Contributions and close
+## 6:20-6:50 -- Contributions and close
 
 - Show `CONTRIBUTIONS.md` and state Alejandro's two Week 06 contributions.
 - Show or read the GitHub and Render links.
