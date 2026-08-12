@@ -2,6 +2,7 @@ import 'dotenv/config';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { UnauthorizedError } from '../utils/error.js';
+import { promoteGitHubAdmin } from './githubAdmins.js';
 
 import User from '../models/users.js';
 
@@ -76,6 +77,8 @@ if (githubOAuthConfigured) {
                             });
                         }
                     }
+
+                    await promoteGitHubAdmin(user, profile.id);
 
                     done(null, user);
                 } catch (error) {

@@ -20,3 +20,5 @@ services:
         sync: false
       - key: GITHUB_CALLBACK_URL
         sync: false
+      - key: GITHUB_ADMIN_IDS
+        value: "230255671"

@@ -21,6 +21,10 @@ import {
 
 process.env.NODE_ENV = 'test';
 
+const {
+    isGitHubAdmin,
+    promoteGitHubAdmin
+} = await import('../src/config/githubAdmins.js');
 const { default: app } = await import('../src/app.js');
 
 const USER_ID = '66b4b7d9a2f1c3e4d5a6b7c8';
@@ -289,6 +293,48 @@ test('health route and Swagger document are available', async () => {
 /* -------------------------------------------------------------------------- */
 /* AUTHENTICATION                                                               */
 /* -------------------------------------------------------------------------- */
+
+test('GitHub admin allowlist only recognizes the verified administrator', () => {
+    assert.equal(isGitHubAdmin('230255671'), true);
+    assert.equal(isGitHubAdmin(230255671), true);
+    assert.equal(isGitHubAdmin('999999999'), false);
+    assert.equal(isGitHubAdmin(undefined), false);
+});
+
+test('GitHub admin promotion persists only for an allowlisted profile', async () => {
+    let saveCalls = 0;
+    const allowlistedUser = {
+        role: 'user',
+        async save() {
+            saveCalls += 1;
+        }
+    };
+
+    const promoted = await promoteGitHubAdmin(
+        allowlistedUser,
+        '230255671'
+    );
+
+    assert.equal(promoted, true);
+    assert.equal(allowlistedUser.role, 'admin');
+    assert.equal(saveCalls, 1);
+
+    const regularUser = {
+        role: 'user',
+        async save() {
+            saveCalls += 1;
+        }
+    };
+
+    const rejected = await promoteGitHubAdmin(
+        regularUser,
+        '999999999'
+    );
+
+    assert.equal(rejected, false);
+    assert.equal(regularUser.role, 'user');
+    assert.equal(saveCalls, 1);
+});
 
 test('protected routes reject unauthenticated requests', async () => {
     const requests = [
