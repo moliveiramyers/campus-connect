@@ -73,7 +73,8 @@ npm run check
 This validates `swagger.json` and runs isolated HTTP tests without connecting
 to the production database. The test suite includes separate GET-all and
 GET-by-ID tests for each of the four collections, protected-route checks, and
-validation/error-response checks.
+validation/error-response checks. As of the 2026-08-11 audit, Swagger contains
+26 operations and all 61 automated tests pass.
 
 ## Render deployment
 
@@ -93,5 +94,7 @@ credentials, OAuth secrets, or session secrets.
 The current team service is:
 `https://campus-connect-ckpe.onrender.com/api-docs`.
 
-The GitHub push, Render redeployment, database demonstration, and 5–8 minute
-YouTube recording are external submission steps.
+The published health route, Swagger UI, Swagger JSON, OAuth redirect, and
+unauthenticated route protection were verified on 2026-08-11. The interactive
+OAuth callback, database mutation demonstration, and 5-8 minute YouTube
+recording remain external submission steps.
