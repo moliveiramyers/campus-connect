@@ -64,6 +64,13 @@ Then set that exact value as `GITHUB_CALLBACK_URL` in Render. Open
 `/api-docs`; Swagger requests on the same site use the session cookie. Use
 `/auth/status` to verify the session and `/auth/logout` to end it.
 
+GitHub administrator access is based only on the numeric provider ID returned
+by the verified OAuth profile. The project administrator ID `230255671` is
+allowlisted for the course deployment. Additional trusted IDs can be supplied
+as a comma-separated `GITHUB_ADMIN_IDS` value. On the next GitHub login, an
+allowlisted active account is promoted to the `admin` role and the change is
+persisted. GitHub numeric IDs are public identifiers, not credentials.
+
 ## Automated checks
 
 ```bash
@@ -73,8 +80,8 @@ npm run check
 This validates `swagger.json` and runs isolated HTTP tests without connecting
 to the production database. The test suite includes separate GET-all and
 GET-by-ID tests for each of the four collections, protected-route checks, and
-validation/error-response checks. As of the 2026-08-11 audit, Swagger contains
-26 operations and all 61 automated tests pass.
+validation/error-response checks. As of the 2026-08-12 audit, Swagger contains
+26 operations and all 63 automated tests pass.
 
 ## Render deployment
 
@@ -86,6 +93,7 @@ secrets and redeploy:
 - `GITHUB_CLIENT_ID`
 - `GITHUB_CLIENT_SECRET`
 - `GITHUB_CALLBACK_URL` (recommended when the OAuth callback is registered)
+- `GITHUB_ADMIN_IDS` (non-secret, comma-separated trusted GitHub numeric IDs)
 
 After deployment, verify `/`, `/api-docs`, `/swagger.json`, `/auth/github`, and
 all four collections from the published site. Never commit `.env`, database

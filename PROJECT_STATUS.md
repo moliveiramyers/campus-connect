@@ -1,6 +1,6 @@
 # Week 06 Project Status
 
-Audit date: 2026-08-11
+Audit date: 2026-08-12
 
 Audited commit:
 `0f3b1b81c0d2e7af8f4940dbb9106643fcf80bfd`
@@ -18,7 +18,7 @@ Published service:
 | POST/PUT validation | Complete | Joi schemas validate create and update bodies for all four collections. Invalid authenticated requests are covered by automated `400` response tests. |
 | OAuth | Ready for video verification | The live `/auth/github` route returns a `302` redirect to GitHub, and callback, status, logout, persistent sessions, and `401` protection are implemented. Complete the interactive GitHub login/logout on video. |
 | Protected routes | Complete | Every collection write route requires a session. Users and Events/Venues enforce admin/self rules as applicable; Registrations enforce admin/owner rules. Live unauthenticated POST, PUT, and DELETE probes return `401`. |
-| GET tests | Complete | Separate GET-all and GET-by-ID tests exist for all four collections. The full 61-test suite passes locally. |
+| GET tests | Complete | Separate GET-all and GET-by-ID tests exist for all four collections. The full 63-test suite passes locally. |
 | Individual contribution | Complete for Alejandro | Two Week 06 contributions are documented in `CONTRIBUTIONS.md`. |
 | Sensitive configuration | Complete | `.env` is ignored and has never been tracked. A 29-commit history scan found no real database, OAuth, or session secrets; `.env.example` contains placeholders only. |
 | CI | Complete | GitHub Actions passed on the audited commit. |
@@ -29,7 +29,7 @@ Published service:
 `npm run check` passes:
 
 - Swagger/OpenAPI validation: 26 operations
-- Automated tests: 61 passed, 0 failed
+- Automated tests: 63 passed, 0 failed
 - GET route coverage: 8 distinct tests across 4 collections
 - Protected-route behavior: all 12 collection POST/PUT/DELETE probes return
   `401` without an authenticated session

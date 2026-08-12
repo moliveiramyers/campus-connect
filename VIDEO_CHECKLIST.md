@@ -62,7 +62,7 @@ Expected success codes:
 
 ## 5:35-6:20 -- Automated tests
 
-- Run `npm test` and show all 61 tests passing.
+- Run `npm test` and show all 63 tests passing.
 - Highlight the eight separately named tests:
   - GET all Users and GET one User
   - GET all Events and GET one Event
