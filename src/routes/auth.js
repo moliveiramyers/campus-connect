@@ -88,6 +88,7 @@ router.get('/logout',
         #swagger.tags = ['Authentication']
         #swagger.description = 'End the current authenticated session (local login or GitHub OAuth).'
         #swagger.responses[200] = { description: 'Logout completed.' }
+        #swagger.responses[401] = { description: 'Authentication required.' }
     */
     requireAuth,
     authController.logoutUser

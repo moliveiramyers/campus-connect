@@ -38,6 +38,12 @@
           "200": {
             "description": "List of all users."
           },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
+          },
           "500": {
             "description": "Unexpected server error."
           }
@@ -64,6 +70,12 @@
           },
           "400": {
             "description": "Request validation failed."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
           },
           "409": {
             "description": "A user with the submitted email already exists."
@@ -95,6 +107,12 @@
           },
           "400": {
             "description": "Invalid MongoDB ObjectId."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator or record owner access required."
           },
           "404": {
             "description": "User not found."
@@ -133,6 +151,12 @@
           "400": {
             "description": "Invalid ID or request body."
           },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator or record owner access required."
+          },
           "404": {
             "description": "User not found."
           },
@@ -164,6 +188,12 @@
           },
           "400": {
             "description": "Invalid MongoDB ObjectId."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator or record owner access required."
           },
           "404": {
             "description": "User not found."
@@ -260,6 +290,12 @@
           "400": {
             "description": "Request validation failed."
           },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
+          },
           "500": {
             "description": "Unexpected server error."
           }
@@ -325,6 +361,12 @@
           "400": {
             "description": "Invalid ID or request body."
           },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
+          },
           "404": {
             "description": "Event not found."
           },
@@ -353,6 +395,12 @@
           },
           "400": {
             "description": "Invalid MongoDB ObjectId."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
           },
           "404": {
             "description": "Event not found."
@@ -402,6 +450,9 @@
           },
           "401": {
             "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
           },
           "500": {
             "description": "Unexpected server error."
@@ -471,6 +522,9 @@
           "401": {
             "description": "Authentication required."
           },
+          "403": {
+            "description": "Administrator privileges required."
+          },
           "404": {
             "description": "Venue not found."
           },
@@ -502,6 +556,9 @@
           },
           "401": {
             "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
           },
           "404": {
             "description": "Venue not found."
@@ -550,6 +607,12 @@
           },
           "400": {
             "description": "Invalid filter value."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator privileges required."
           },
           "500": {
             "description": "Unexpected server error."
@@ -614,6 +677,12 @@
           },
           "400": {
             "description": "Invalid MongoDB ObjectId."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Administrator or registration owner access required."
           },
           "404": {
             "description": "Registration not found."
@@ -825,6 +894,9 @@
         "responses": {
           "200": {
             "description": "Logout completed."
+          },
+          "401": {
+            "description": "Authentication required."
           }
         }
       }

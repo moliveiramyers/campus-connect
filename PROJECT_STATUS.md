@@ -1,67 +1,62 @@
-# Week 06 Project Status
+# Week 07 Final Project Status
 
 Audit date: 2026-08-12
 
-Audited commit:
-`0f3b1b81c0d2e7af8f4940dbb9106643fcf80bfd`
+Starting revision: `ac38debb93863012bd4092fe1385821979b974f5`
 
-Published service:
-`https://campus-connect-ckpe.onrender.com`
+Published service: `https://campus-connect-ckpe.onrender.com`
+
+The starting revision was synchronized with `origin/main` before this final
+audit (`0` commits ahead and `0` behind). The final audit updates must still be
+committed, pushed, and allowed to redeploy before recording.
 
 ## Rubric status
 
-| Requirement | Status | Evidence / external action |
+| Criterion | Status | Evidence / remaining action |
 | --- | --- | --- |
-| Deployment | Verified live | `/` returns `200`; `/api-docs/` and `/swagger.json` are public over HTTPS. The deployed Swagger host is `campus-connect-ckpe.onrender.com`. |
-| Four CRUD collections | Complete | Users, Events, Venues, and Registrations each expose GET all, GET one, POST, PUT, and DELETE in the published Swagger document. |
-| Swagger at `/api-docs` | Complete | The deployed Swagger 2.0 document validates and contains 26 operations: five for each collection and six authentication operations. |
-| POST/PUT validation | Complete | Joi schemas validate create and update bodies for all four collections. Invalid authenticated requests are covered by automated `400` response tests. |
-| OAuth | Ready for video verification | The live `/auth/github` route returns a `302` redirect to GitHub, and callback, status, logout, persistent sessions, and `401` protection are implemented. Complete the interactive GitHub login/logout on video. |
-| Protected routes | Complete | Every collection write route requires a session. Users and Events/Venues enforce admin/self rules as applicable; Registrations enforce admin/owner rules. Live unauthenticated POST, PUT, and DELETE probes return `401`. |
-| GET tests | Complete | Separate GET-all and GET-by-ID tests exist for all four collections. The full 63-test suite passes locally. |
-| Individual contribution | Complete for Alejandro | Two Week 06 contributions are documented in `CONTRIBUTIONS.md`. |
-| Sensitive configuration | Complete | `.env` is ignored and has never been tracked. A 29-commit history scan found no real database, OAuth, or session secrets; `.env.example` contains placeholders only. |
-| CI | Complete | GitHub Actions passed on the audited commit. |
-| Video and submission | External action pending | Record the 5-8 minute published-site demonstration, upload it to YouTube, replace the placeholder in `CANVAS_SUBMISSION.md`, and submit all three links in Canvas. |
+| Deployment (15) | Functionally verified | On 2026-08-12, `/`, `/api-docs/`, and `/swagger.json` returned `200` over HTTPS. No real `.env` file or credentials are tracked. Push the final audit updates and wait for Render before recording. |
+| OAuth (15) | Complete; interactive video check required | GitHub OAuth redirects to the published callback. Sessions are persistent in MongoDB. All collection writes are protected; Users and Registrations also have protected reads. Logged-out `/users` and `/registrations` return `401`. Complete login, authenticated access, logout, and a post-logout `401` on video. |
+| Endpoints and documentation (35) | Complete | Swagger is executable at `/api-docs/`, validates successfully, and has 26 operations. Users, Events, Venues, and Registrations each have GET all, GET one, POST, PUT, and DELETE. The Event collection has more than seven stored fields. Demonstrate database changes at the published URL. |
+| Testing (15) | Complete | All 70 tests pass. The suite contains separate GET-all and GET-by-ID tests for all four collections. Health, Swagger, auth status, protection, authorization, validation, and safe-500 behaviors are also tested. |
+| Data validation (10) | Complete | Joi validates POST and PUT bodies for all four collections. Eight route-level cases prove that invalid POST/PUT requests return `400`, one pair per collection. |
+| Error handling (10) | Complete | Every CRUD controller action uses `try/catch` and forwards failures to the centralized handler. Invalid input returns `400`; unexpected failures return a safe `500` without a production stack trace. |
+| Individual contribution (20) | Complete for Alejandro | Two repository-backed Week 07 contributions are documented in `CONTRIBUTIONS.md` and prepared in `CANVAS_SUBMISSION.md`. Other team members must replace their pending entries with their own truthful work. |
 
-## Verification result
+## Final verification results
 
-`npm run check` passes:
+- Local branch synchronized with `origin/main` before the audit: `0` ahead,
+  `0` behind.
+- Swagger/OpenAPI validation: 14 paths and 26 operations.
+- CRUD documentation: five operations for each of four collections.
+- Automated tests: 70 passed, 0 failed.
+- GET/GetAll test coverage: eight separately named route tests.
+- Validation coverage: POST and PUT rejection tests for all four collections.
+- Production dependency audit: zero known vulnerabilities.
+- Mongoose updated to `9.9.2`; vulnerable transitive `js-yaml` updated to
+  `4.3.1`.
 
-- Swagger/OpenAPI validation: 26 operations
-- Automated tests: 63 passed, 0 failed
-- GET route coverage: 8 distinct tests across 4 collections
-- Protected-route behavior: all 12 collection POST/PUT/DELETE probes return
-  `401` without an authenticated session
-- Production dependency audit: 0 known vulnerabilities
-
-Published checks completed on 2026-08-11:
+Published checks completed on 2026-08-12:
 
 - Health endpoint: `200`
-- Swagger JSON: `200`, HTTPS host, 14 paths and 26 operations
-- Swagger UI: public at `/api-docs/`
-- GitHub OAuth start: `302` to GitHub
-- Authentication status while logged out: `200` with `authenticated: false`
+- Swagger UI: `200`
+- Swagger JSON: `200`, host `campus-connect-ckpe.onrender.com`, HTTPS
+- Authentication status while logged out: `200` with
+  `authenticated: false`
+- GitHub OAuth start: `302` to GitHub with the published callback URL
 - Public reads: Events and Venues return `200`
-- Protected reads: Users and Registrations return `401` while logged out
-- Invalid public Event filter: `400`
+- Protected reads while logged out: Users and Registrations return `401`
 
-## Before recording
+## External steps still required
 
-1. Confirm the GitHub OAuth App callback URL is
+1. Commit and push the final audit changes, then wait for Render's automatic
+   deployment to finish.
+2. Confirm the GitHub OAuth App callback URL is exactly
    `https://campus-connect-ckpe.onrender.com/auth/github/callback`.
-2. Confirm the Render environment contains `GITHUB_CLIENT_ID`,
-   `GITHUB_CLIENT_SECRET`, `GITHUB_CALLBACK_URL`, `MONGODB_URI`, and
-   `SESSION_SECRET` without displaying their values in the recording.
-3. Ensure the GitHub-linked demonstration user has the `admin` role in MongoDB;
-   new OAuth users receive the default `user` role and cannot perform admin
-   CRUD operations.
-4. Log in through `/auth/github` and verify `/auth/status` reports
-   `authenticated: true`.
-5. Use the published `/api-docs/` to demonstrate CRUD for all four collections,
-   including visible database changes and correct status codes.
-6. Demonstrate invalid POST and PUT bodies returning `400` and unauthenticated
-   protected writes returning `401`.
-7. Run or show `npm test`, highlighting all eight GET/GetAll tests.
-8. Record a 5-8 minute video, upload it to YouTube as public or unlisted, and
-   verify all three submission links in an incognito window.
+3. Log in through `/auth/github` and confirm `/auth/status` reports
+   `authenticated: true` and `role: admin` for the demonstration account.
+4. Record the 5–8 minute rubric demonstration using the published URL. Show
+   authentication, all four CRUD collections, database mutations, invalid
+   POST/PUT requests, error handling, and the passing tests.
+5. Upload the video as public or unlisted, replace the placeholder in
+   `CANVAS_SUBMISSION.md`, and test all three submission links in an incognito
+   window.

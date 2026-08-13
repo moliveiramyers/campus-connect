@@ -1,35 +1,34 @@
-# Canvas Submission — Week 06
+# Canvas Submission — Week 07 Final Project
 
-Copy the following text into Canvas after replacing the YouTube placeholder and
-confirming the deployed links are public.
+Copy the text below into Canvas after replacing the YouTube placeholder. Test
+all three links in a private/incognito window before submitting.
 
 ---
 
-GitHub link:
+GitHub repository:
 https://github.com/moliveiramyers/campus-connect
 
-Render link:
+Published Render API:
 https://campus-connect-ckpe.onrender.com
 
-YouTube video link:
+YouTube demonstration:
 [PASTE THE PUBLIC OR UNLISTED YOUTUBE URL HERE]
 
-Collections added since Week 05:
+My individual contributions during the final week:
 
-1. Venues
-2. Registrations
-
-My individual contributions this week:
-
-1. I implemented the Registrations collection, including its Mongoose model,
-   query filters, Joi validation for POST and PUT, complete GET/POST/PUT/DELETE
-   controllers and routes, and Swagger documentation.
-2. I integrated GitHub OAuth login/logout and persistent sessions, protected
-   the Venue and Registration write routes, and added passing tests for every
-   GET/GetAll route plus authorization and validation behavior.
+1. I completed the final rubric audit and deployment/video guidance, verifying
+   the four CRUD collections, published Swagger, OAuth protection, validation,
+   error handling, automated tests, and secret hygiene.
+2. I implemented verified GitHub administrator promotion using a numeric
+   provider-ID allowlist, connected it to Passport, Render, and environment
+   configuration, and added automated promotion and authorization tests.
 
 ---
 
-Before submitting, open every link in a private/incognito window. The GitHub
-repository must be accessible, the Render link must show the new four-collection
-version, and the YouTube video must be public or unlisted.
+Final checks before submission:
+
+- The GitHub repository is public and contains no `.env` file or real secrets.
+- The Render link works outside the development computer.
+- `/api-docs/` loads and can execute requests after authentication.
+- The YouTube video is public or unlisted, lasts 5–8 minutes, and shows every
+  rubric item at the published URL rather than localhost.

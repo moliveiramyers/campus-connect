@@ -1,48 +1,49 @@
-# Week 06 Video Checklist (target: 6-7 minutes)
+# Week 07 Final Video Checklist (target: 7–7.5 minutes)
 
-Keep the recording between 5:00 and 8:00. Use the published Render site--not
-localhost--and keep `.env`, Render secret values, and database credentials off
-screen.
+Keep the finished recording between 5:00 and 8:00. Demonstrate the published
+Render application—not localhost—and keep `.env`, cookies, session IDs,
+database credentials, and Render secret values off screen.
 
-Before recording, ensure the GitHub-linked demonstration account has the
-`admin` role in MongoDB. A new GitHub OAuth account receives the default `user`
-role and will receive `403` on Users, Events, and Venues admin operations.
+Before recording, log in once to confirm that `/auth/status` reports the
+demonstration account with `role: admin`. Prepare the IDs and request bodies in
+a private note so the CRUD section stays fast.
 
-## 0:00-0:40 -- Deployment and security
+## 0:00–0:35 — Deployment and secret hygiene
 
-- Show `https://campus-connect-ckpe.onrender.com` returning the health JSON.
-- Open the public `/api-docs/` route.
-- Briefly show the public GitHub repository and `.env.example`/`.gitignore` to
-  establish that real credentials are not committed. Do not open Render's
-  secret-value screen.
+- Open `https://campus-connect-ckpe.onrender.com` and show the health JSON.
+- Open the public GitHub repository and briefly show `.gitignore` and
+  `.env.example`; do not expose Render or local secret values.
+- State that this is the published service, not localhost.
 
-## 0:40-1:20 -- Four collections and Swagger
+## 0:35–1:05 — Swagger and four collections
 
-- In Swagger UI, point out Users, Events, Venues, and Registrations.
-- Point out GET, POST, PUT, and DELETE for all four collections.
-- Open `/swagger.json` briefly to show that the executable document is present.
+- Open `https://campus-connect-ckpe.onrender.com/api-docs/`.
+- Point out Users, Events, Venues, and Registrations.
+- Show that every collection has GET, POST, PUT, and DELETE operations.
+- Briefly open `/swagger.json` to prove the executable contract is published.
 
-## 1:20-2:00 -- OAuth and protected routes
+## 1:05–1:50 — OAuth and protected routes
 
-- While logged out, execute Venue POST or Registration POST and show `401`.
-- Open `/auth/github`, complete GitHub login, and return to `/api-docs/`.
-- Execute `/auth/status` and show `authenticated: true`.
-- Explain that every collection write requires a session. Users, Events, and
-  Venues require admin privileges for their write operations; Registrations
-  allow owners or admins as documented.
+- While logged out, execute a protected request and show `401`.
+- Open `/auth/github`, complete GitHub OAuth, and return to `/api-docs/`.
+- Execute `/auth/status`; show `authenticated: true` and the admin role.
+- State that every collection write is protected. Users and Registrations also
+  enforce protected reads and owner/admin rules.
 
-## 2:00-4:40 -- CRUD and database changes
+## 1:50–5:30 — CRUD and visible database changes
 
-- Use prepared request bodies and IDs so this section stays fast.
-- For each collection, demonstrate GET, POST, PUT, and DELETE with the proper
-  status code. At minimum, expand every operation and execute enough requests
-  to make the four complete CRUD sets unambiguous.
-- Use this dependency order when creating records: User, Venue, Event, then
-  Registration.
-- After a POST and PUT, show the corresponding MongoDB Atlas document or run a
-  GET-by-ID to prove the database value changed.
-- Delete temporary demonstration records in reverse order: Registration,
-  Event, Venue, then User.
+Create temporary records in this dependency order: User, Venue, Event,
+Registration. Use the returned IDs in subsequent requests.
+
+For each collection, visibly execute:
+
+1. POST and show `201`.
+2. GET all and GET by ID and show `200`.
+3. PUT and show `200`; immediately GET by ID to prove the stored value changed.
+4. DELETE and show `200`.
+
+Delete in reverse dependency order: Registration, Event, Venue, User. Venue
+and User deletion are soft deletes, so their records become inactive.
 
 Expected success codes:
 
@@ -51,28 +52,30 @@ Expected success codes:
 - PUT: `200`
 - DELETE: `200`
 
-## 4:40-5:35 -- Data validation and errors
+## 5:30–6:20 — Validation and error handling
 
-- Show invalid POST and PUT examples for both Week 06 collections (Venues and
-  Registrations), each returning `400` after login.
-- Useful invalid examples: Venue capacity `0`, missing required Venue fields,
-  malformed Registration IDs, unsupported Registration status, or an empty
-  PUT body.
-- Briefly mention the documented `404`, `409`, and safe `500` responses.
+- Show the eight named automated validation cases: invalid POST and PUT for
+  Users, Events, Venues, and Registrations, all returning `400`.
+- Execute at least one invalid POST and one invalid PUT in published Swagger.
+- Briefly show a CRUD controller's `try/catch` and the centralized error
+  handler. Mention documented `400`, `404`, `409`, and safe `500` responses.
 
-## 5:35-6:20 -- Automated tests
+Useful invalid values include an invalid email, Event/Venue capacity `0`, a
+malformed ObjectId, an unsupported Registration status, or an empty PUT body.
 
-- Run `npm test` and show all 63 tests passing.
-- Highlight the eight separately named tests:
+## 6:20–7:10 — Automated tests
+
+- Run `npm test` and show `70` passed and `0` failed.
+- Highlight the eight separately named GET tests:
   - GET all Users and GET one User
   - GET all Events and GET one Event
   - GET all Venues and GET one Venue
   - GET all Registrations and GET one Registration
-- Point out the OAuth `401` and validation tests.
+- Point out the protection, validation, and safe-500 tests.
 
-## 6:20-6:50 -- Contributions and close
+## 7:10–7:40 — Contributions and close
 
-- Show `CONTRIBUTIONS.md` and state Alejandro's two Week 06 contributions.
+- Show `CONTRIBUTIONS.md` and state Alejandro's two Week 07 contributions.
 - Show or read the GitHub and Render links.
-- End the recording before 8:00, upload it to YouTube as public or unlisted,
-  and test the link in an incognito window.
+- Stop before 8:00, upload to YouTube as public or unlisted, and verify the
+  GitHub, Render, and YouTube links in an incognito window.

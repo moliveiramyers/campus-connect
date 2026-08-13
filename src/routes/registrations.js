@@ -23,6 +23,8 @@ router.get(
         #swagger.parameters['status'] = { in: 'query', type: 'string', required: false, enum: ['registered', 'waitlisted', 'cancelled', 'attended'] }
         #swagger.responses[200] = { description: 'List of registrations.' }
         #swagger.responses[400] = { description: 'Invalid filter value.' }
+        #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'Administrator privileges required.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
@@ -38,6 +40,8 @@ router.get(
         #swagger.parameters['id'] = { in: 'path', description: 'Registration ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Registration found successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }
+        #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'Administrator or registration owner access required.' }
         #swagger.responses[404] = { description: 'Registration not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */

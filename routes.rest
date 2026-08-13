@@ -1,8 +1,12 @@
-@baseUrl = http://localhost:8080
+@baseUrl = https://campus-connect-ckpe.onrender.com
 @userId = 66b4b7d9a2f1c3e4d5a6b7c8
-@eventId = 66b4b7d9a2f1c3e4d5a6b7c9
 @venueId = 66b4b7d9a2f1c3e4d5a6b7ca
+@eventId = 66b4b7d9a2f1c3e4d5a6b7c9
 @registrationId = 66b4b7d9a2f1c3e4d5a6b7cb
+
+# Protected requests require a same-site authenticated session. For the final
+# demonstration, sign in through /auth/github and execute them in Swagger UI.
+# Replace the IDs above with the IDs returned by the temporary demo records.
 
 ### Health
 GET {{baseUrl}}/
@@ -10,36 +14,53 @@ GET {{baseUrl}}/
 ### Swagger document
 GET {{baseUrl}}/swagger.json
 
-### OAuth status
+### Authentication status
 GET {{baseUrl}}/auth/status
 
-### Begin OAuth login (open this URL in a browser)
+### Begin GitHub OAuth (open in a browser)
 GET {{baseUrl}}/auth/github
 
-### Users: get all
+### Users — GET all
 GET {{baseUrl}}/users
 
-### Users: get one
+### Users — GET one
 GET {{baseUrl}}/users/{{userId}}
 
-### Events: get all
-GET {{baseUrl}}/events
+### Users — POST
+POST {{baseUrl}}/users
+Content-Type: application/json
 
-### Events: get one
-GET {{baseUrl}}/events/{{eventId}}
+{
+  "name": "Week 07 Demo User",
+  "email": "week07.demo.user@example.com",
+  "password": "Campus123!",
+  "role": "user",
+  "profileImage": "https://example.com/week07-user.jpg"
+}
 
-### Venues: get all
+### Users — PUT
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+
+{
+  "name": "Week 07 Updated User"
+}
+
+### Users — DELETE (soft delete)
+DELETE {{baseUrl}}/users/{{userId}}
+
+### Venues — GET all
 GET {{baseUrl}}/venues
 
-### Venues: get one
+### Venues — GET one
 GET {{baseUrl}}/venues/{{venueId}}
 
-### Venues: create (OAuth session required)
+### Venues — POST
 POST {{baseUrl}}/venues
 Content-Type: application/json
 
 {
-  "name": "Student Center Room 201",
+  "name": "Week 07 Demo Auditorium",
   "venueType": "in-person",
   "building": "Student Center",
   "room": "201",
@@ -48,13 +69,60 @@ Content-Type: application/json
   "accessibilityNotes": "Elevator access available."
 }
 
-### Registrations: get all
+### Venues — PUT
+PUT {{baseUrl}}/venues/{{venueId}}
+Content-Type: application/json
+
+{
+  "capacity": 100,
+  "accessibilityNotes": "Elevator and live caption display available."
+}
+
+### Venues — DELETE (soft delete)
+DELETE {{baseUrl}}/venues/{{venueId}}
+
+### Events — GET all
+GET {{baseUrl}}/events
+
+### Events — GET one
+GET {{baseUrl}}/events/{{eventId}}
+
+### Events — POST
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "Week 07 Campus Technology Fair",
+  "description": "Students present final technology projects to the campus community.",
+  "category": "Technology",
+  "startDate": "2026-08-20T15:00:00.000Z",
+  "endDate": "2026-08-20T18:00:00.000Z",
+  "venueId": "{{venueId}}",
+  "organizerId": "{{userId}}",
+  "capacity": 80,
+  "status": "published",
+  "imageUrl": "https://example.com/week07-fair.jpg"
+}
+
+### Events — PUT
+PUT {{baseUrl}}/events/{{eventId}}
+Content-Type: application/json
+
+{
+  "capacity": 100,
+  "status": "published"
+}
+
+### Events — DELETE
+DELETE {{baseUrl}}/events/{{eventId}}
+
+### Registrations — GET all
 GET {{baseUrl}}/registrations
 
-### Registrations: get one
+### Registrations — GET one
 GET {{baseUrl}}/registrations/{{registrationId}}
 
-### Registrations: create (OAuth session required)
+### Registrations — POST (admin body)
 POST {{baseUrl}}/registrations
 Content-Type: application/json
 
@@ -62,19 +130,37 @@ Content-Type: application/json
   "userId": "{{userId}}",
   "eventId": "{{eventId}}",
   "status": "registered",
-  "notes": "Requires wheelchair seating."
+  "notes": "Week 07 demonstration registration."
 }
 
-### Registrations: update (OAuth session required)
+### Registrations — PUT
 PUT {{baseUrl}}/registrations/{{registrationId}}
 Content-Type: application/json
 
 {
-  "status": "attended"
+  "status": "attended",
+  "notes": "Checked in during the final demonstration."
 }
 
-### Registrations: delete (OAuth session required)
+### Registrations — DELETE
 DELETE {{baseUrl}}/registrations/{{registrationId}}
 
-### OAuth logout
+### Validation example — invalid Event POST returns 400
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "No",
+  "capacity": 0
+}
+
+### Validation example — invalid Venue PUT returns 400
+PUT {{baseUrl}}/venues/{{venueId}}
+Content-Type: application/json
+
+{
+  "capacity": 0
+}
+
+### Logout
 GET {{baseUrl}}/auth/logout

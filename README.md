@@ -22,7 +22,7 @@ return `404`; duplicate records return `409`; unexpected errors return a safe
 
 Requirements:
 
-- Node.js 20 or newer
+- Node.js 20.19 or newer
 - A MongoDB Atlas database
 - A GitHub OAuth App
 
@@ -80,8 +80,9 @@ npm run check
 This validates `swagger.json` and runs isolated HTTP tests without connecting
 to the production database. The test suite includes separate GET-all and
 GET-by-ID tests for each of the four collections, protected-route checks, and
-validation/error-response checks. As of the 2026-08-12 audit, Swagger contains
-26 operations and all 63 automated tests pass.
+route-level POST/PUT validation checks for every collection. As of the
+2026-08-12 final audit, Swagger contains 26 operations and all 70 automated
+tests pass.
 
 ## Render deployment
 
@@ -102,7 +103,9 @@ credentials, OAuth secrets, or session secrets.
 The current team service is:
 `https://campus-connect-ckpe.onrender.com/api-docs`.
 
-The published health route, Swagger UI, Swagger JSON, OAuth redirect, and
-unauthenticated route protection were verified on 2026-08-11. The interactive
-OAuth callback, database mutation demonstration, and 5-8 minute YouTube
-recording remain external submission steps.
+The published health route, Swagger UI, Swagger JSON, OAuth redirect, public
+reads, and unauthenticated route protection were verified on 2026-08-12. The
+final audit changes must be pushed and redeployed before recording. The
+interactive OAuth callback, database mutation demonstration, and 5–8 minute
+YouTube recording remain external submission steps; see `PROJECT_STATUS.md`
+and `VIDEO_CHECKLIST.md`.

@@ -21,6 +21,14 @@ router.get('/',
             description: 'List of all users.'
         }
 
+        #swagger.responses[401] = {
+            description: 'Authentication required.'
+        }
+
+        #swagger.responses[403] = {
+            description: 'Administrator privileges required.'
+        }
+
         #swagger.responses[500] = {
             description: 'Unexpected server error.'
         }
@@ -52,6 +60,14 @@ router.get('/:id',
 
         #swagger.responses[400] = {
             description: 'Invalid MongoDB ObjectId.'
+        }
+
+        #swagger.responses[401] = {
+            description: 'Authentication required.'
+        }
+
+        #swagger.responses[403] = {
+            description: 'Administrator or record owner access required.'
         }
 
         #swagger.responses[500] = {
@@ -87,6 +103,14 @@ router.post('/',
 
       #swagger.responses[409] = {
           description: 'A user with the submitted email already exists.'
+      }
+
+      #swagger.responses[401] = {
+          description: 'Authentication required.'
+      }
+
+      #swagger.responses[403] = {
+          description: 'Administrator privileges required.'
       }
 
       #swagger.responses[500] = {
@@ -134,6 +158,14 @@ router.put('/:id',
            description: 'The updated email is already in use.'
        }
 
+       #swagger.responses[401] = {
+           description: 'Authentication required.'
+       }
+
+       #swagger.responses[403] = {
+           description: 'Administrator or record owner access required.'
+       }
+
        #swagger.responses[500] = {
            description: 'Unexpected server error.'
        }
@@ -170,6 +202,14 @@ router.delete('/:id',
 
        #swagger.responses[400] = {
            description: 'Invalid MongoDB ObjectId.'
+       }
+
+       #swagger.responses[401] = {
+           description: 'Authentication required.'
+       }
+
+       #swagger.responses[403] = {
+           description: 'Administrator or record owner access required.'
        }
 
        #swagger.responses[500] = {
