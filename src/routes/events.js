@@ -56,6 +56,8 @@ router.post(
         }
         #swagger.responses[201] = { description: 'Event created successfully.' }
         #swagger.responses[400] = { description: 'Request validation failed.' }
+        #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'Administrator privileges required.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
     requireAuth,
@@ -77,6 +79,8 @@ router.put(
         }
         #swagger.responses[200] = { description: 'Event updated successfully.' }
         #swagger.responses[400] = { description: 'Invalid ID or request body.' }
+        #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'Administrator privileges required.' }
         #swagger.responses[404] = { description: 'Event not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */
@@ -95,6 +99,8 @@ router.delete(
         #swagger.parameters['id'] = { in: 'path', description: 'Event ID', required: true, type: 'string' }
         #swagger.responses[200] = { description: 'Event deleted successfully.' }
         #swagger.responses[400] = { description: 'Invalid MongoDB ObjectId.' }
+        #swagger.responses[401] = { description: 'Authentication required.' }
+        #swagger.responses[403] = { description: 'Administrator privileges required.' }
         #swagger.responses[404] = { description: 'Event not found.' }
         #swagger.responses[500] = { description: 'Unexpected server error.' }
     */

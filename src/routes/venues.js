@@ -85,6 +85,10 @@ router.post(
             description: 'Authentication required.'
         }
 
+        #swagger.responses[403] = {
+            description: 'Administrator privileges required.'
+        }
+
         #swagger.responses[500] = {
             description: 'Unexpected server error.'
         }
@@ -132,6 +136,10 @@ router.put(
             description: 'Authentication required.'
         }
 
+        #swagger.responses[403] = {
+            description: 'Administrator privileges required.'
+        }
+
         #swagger.responses[500] = {
             description: 'Unexpected server error.'
         }
@@ -170,6 +178,10 @@ router.delete(
 
         #swagger.responses[401] = {
             description: 'Authentication required.'
+        }
+
+        #swagger.responses[403] = {
+            description: 'Administrator privileges required.'
         }
 
         #swagger.responses[500] = {

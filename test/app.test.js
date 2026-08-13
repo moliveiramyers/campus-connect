@@ -1440,7 +1440,7 @@ test('invalid event creation returns 401 before validation when unauthenticated'
     assert.equal(result.response.status, 401);
 });
 
-test('invalid event creation returns 400 after authentication and authorization', async () => {
+test('POST /events rejects invalid data with 400 after authentication', async () => {
     const session = await getAdminSession();
 
     const result = await request('/events', {
@@ -1456,6 +1456,139 @@ test('invalid event creation returns 400 after authentication and authorization'
 
     assert.equal(result.response.status, 400);
     assert.ok(result.body.errors.length > 0);
+});
+
+test('POST /users rejects invalid data with 400', async () => {
+    const session = await getAdminSession();
+
+    const result = await request('/users', {
+        method: 'POST',
+        headers: {
+            cookie: session
+        },
+        body: JSON.stringify({
+            name: 'A',
+            email: 'not-an-email',
+            password: 'short',
+            role: 'admin'
+        })
+    });
+
+    assert.equal(result.response.status, 400);
+    assert.ok(result.body.errors.length > 0);
+});
+
+test('PUT /users/:id rejects invalid data with 400', async () => {
+    const session = await getAdminSession();
+
+    const result = await request(`/users/${USER_ID}`, {
+        method: 'PUT',
+        headers: {
+            cookie: session
+        },
+        body: JSON.stringify({
+            email: 'not-an-email'
+        })
+    });
+
+    assert.equal(result.response.status, 400);
+    assert.ok(result.body.errors.length > 0);
+});
+
+test('PUT /events/:id rejects invalid data with 400', async () => {
+    const session = await getAdminSession();
+
+    const result = await request(`/events/${EVENT_ID}`, {
+        method: 'PUT',
+        headers: {
+            cookie: session
+        },
+        body: JSON.stringify({
+            capacity: 0
+        })
+    });
+
+    assert.equal(result.response.status, 400);
+    assert.ok(result.body.errors.length > 0);
+});
+
+test('POST /venues rejects invalid data with 400', async () => {
+    const session = await getAdminSession();
+
+    const result = await request('/venues', {
+        method: 'POST',
+        headers: {
+            cookie: session
+        },
+        body: JSON.stringify({
+            venueType: 'in-person',
+            capacity: 0
+        })
+    });
+
+    assert.equal(result.response.status, 400);
+    assert.ok(result.body.errors.length > 0);
+});
+
+test('PUT /venues/:id rejects invalid data with 400', async () => {
+    const session = await getAdminSession();
+
+    const result = await request(`/venues/${VENUE_ID}`, {
+        method: 'PUT',
+        headers: {
+            cookie: session
+        },
+        body: JSON.stringify({
+            capacity: 0
+        })
+    });
+
+    assert.equal(result.response.status, 400);
+    assert.ok(result.body.errors.length > 0);
+});
+
+test('POST /registrations rejects invalid data with 400', async () => {
+    const session = await getUserSession();
+
+    const result = await request('/registrations', {
+        method: 'POST',
+        headers: {
+            cookie: session
+        },
+        body: JSON.stringify({
+            eventId: 'not-an-object-id'
+        })
+    });
+
+    assert.equal(result.response.status, 400);
+    assert.ok(result.body.errors.length > 0);
+});
+
+test('PUT /registrations/:id rejects invalid data with 400', async () => {
+    const session = await getUserSession();
+
+    await withStub(
+        Registration,
+        'findById',
+        async () => registrationFixture,
+        async () => {
+            const result = await request(
+                `/registrations/${REGISTRATION_ID}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        cookie: session
+                    },
+                    body: JSON.stringify({
+                        status: 'unknown'
+                    })
+                }
+            );
+
+            assert.equal(result.response.status, 400);
+            assert.ok(result.body.errors.length > 0);
+        }
+    );
 });
 
 test('invalid event IDs return 400', async () => {
